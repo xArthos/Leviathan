@@ -1,0 +1,148 @@
+<h1>Profile</h1>
+
+{{#if msg}}
+<div class="alert alert-success" role="alert">
+    {{msg}}
+</div>
+{{/if}}
+
+<img src={{user.profilePictureUrl}} alt="Profile Picture">
+
+<ul>
+    <li>
+        {{user.name.firstName}}
+    </li>
+    <li>
+        {{user.email}}
+    </li>
+</ul>
+
+{{!-- Button trigger modal --}}
+<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#editFormModal">
+    Edit Infos
+</button>
+
+{{!-- Modal --}}
+<div class="modal fade" id="editFormModal" tabindex="-1" aria-labelledby="editFormModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            {{!-- Modal Header --}}
+            <div class="modal-header">
+                <h5 class="modal-title" id="editFormModalLabel">Profile Infos</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+            {{!-- Modal Body --}}
+            <div class="modal-body">
+
+                <div class="row">
+                    <ul class="p-3 list-group col-xs-6 col-sm-6 col-md-6">
+                        <li class="list-group-item"><b>Username:</b> {{user.userName}}</li>
+                        <li class="list-group-item"><b>E-mail:</b> {{user.email}}</li>
+                        <li class="list-group-item"><b>First Name:</b> {{user.name.firstName}}</li>
+                        <li class="list-group-item"><b>Second Name:</b> {{user.name.lastName}}</li>
+                    </ul>
+
+                    <img src={{user.profilePictureUrl}} alt="Profile Picture" class="col-xs-6 col-sm-6 col-md-6">
+                </div>
+
+                <form action="/profile/editInfo" method="POST" role="form" autocomplete="on"
+                    enctype="multipart/form-data">
+
+                    {{! First Form Row: Username }}
+                    <div class="row">
+                        <div class="col-xs-6 col-sm-6 col-md-6">
+                            <div class="form-group">
+                                <label for="userName">Username</label>
+                                <input type="text" name="userName" id="userName" class="form-control input-sm"
+                                    placeholder="Use your username">
+                            </div>
+                        </div>
+                    </div>
+
+                    {{! Second Form Row: First Name / Last Name }}
+                    <div class="row">
+                        <div class="col-xs-6 col-sm-6 col-md-6">
+                            <div class="form-group">
+                                <label for="firstName">First Name</label>
+                                <input type="text" name="firstName" id="firstName" class="form-control input-sm"
+                                    placeholder="First Name">
+                            </div>
+                        </div>
+                        <div class="col-xs-6 col-sm-6 col-md-6">
+                            <div class="form-group">
+                                <label for="lastName">Last Name</label>
+                                <input type="text" name="lastName" id="lastName" class="form-control input-sm"
+                                    placeholder="Last Name">
+                            </div>
+                        </div>
+                    </div>
+
+                    {{! Third Form Row: E-Mail }}
+                    <div class="row">
+                        <div class="col-xs-6 col-sm-6 col-md-6">
+                            <div class="form-group">
+                                <label for="email">Email address</label>
+                                <input type="email" name="email" id="email" class="form-control input-sm"
+                                    placeholder="example@email.com">
+                            </div>
+                        </div>
+
+                        <div class="col-xs-6 col-sm-6 col-md-6">
+                            <div class="form-group">
+                                <label for="confirmEmail">Confirm Email address</label>
+                                <input type="email" name="confirmEmail" id="confirmEmail" class="form-control input-sm"
+                                    placeholder="example@email.com">
+                            </div>
+                        </div>
+                    </div>
+
+                    {{! Fourth Form Row: Upload Picture }}
+                    <div class="row">
+                        <div class="col-xs-6 col-sm-6 col-md-6">
+                            <div class="form-group">
+                                <label for="profilePicture">Profile Picture</label>
+                                <input type="file" name="profilePicture" id="profilePicture"
+                                    class="form-control input-sm" placeholder="profilePicture">
+                            </div>
+                        </div>
+                    </div>
+
+                    {{! Fifth Form Row: Password }}
+                    <div class="row">
+                        <div class="col-xs-6 col-sm-6 col-md-6">
+                            <div class="form-group">
+                                <label for="password">Password</label>
+                                <input type="password" name="password" id="password" class="form-control input-sm"
+                                    placeholder="Password">
+                            </div>
+                        </div>
+                        <div class="col-xs-6 col-sm-6 col-md-6">
+                            <div class="form-group">
+                                <label for="passwordConfirmation">Confirm Password</label>
+                                <input type="password" name="passwordConfirmation" id="passwordConfirmation"
+                                    class="form-control input-sm" placeholder="Confirm Password">
+                            </div>
+                        </div>
+                    </div>
+
+                    {{! Buttons }}
+                    <div class="row">
+                        {{! Submit }}
+                        <div class="col-xs-4 col-sm-4 col-md-4">
+                            <input type="submit" value="Save changes" class="btn btn-success btn-block">
+                        </div>
+
+                        <button type="button" class="btn btn-secondary col-xs-2 col-sm-2 col-md-2"
+                            data-dismiss="modal">Close</button>
+
+                    </div>
+
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
