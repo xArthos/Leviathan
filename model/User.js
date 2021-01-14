@@ -69,15 +69,12 @@ const userSchema = new Schema({
     profilePictureUrl: {
         type: String
     },
-    creationDate: {
-        type: Date,
-        default: Date.now()
-    },
+
     active: {
         type: Boolean,
         default: false
     }
-});
+}, {timestamps: true});
 
 // Virtual
 userSchema.virtual('fullName').get(() => {

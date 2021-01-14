@@ -1,20 +1,10 @@
 // Modules
-const http = require('http');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const express = require('express');
 const mongoose = require('mongoose');
-const path = require('path');
-const bcrypt = require('bcrypt');
-const multer = require('multer');
 const sgMail = require('@sendgrid/mail');
 const session = require('express-session');
-const Joi = require('@hapi/joi');
-const axios = require('axios');
-const fs = require('fs');
-const jwt = require('jsonwebtoken');
-const passport = require('passport');
-const expressValidator = require('express-validator');
 const flash = require('connect-flash');
 const app = express();
 require('dotenv').config();
@@ -39,15 +29,16 @@ sgMail.setApiKey(process.env.SENDGRID_API_KEY);             // SendGrid
 
 // URL Setting
 const PORT = process.env.PORT;
-const host = 'localhost';
+const host = process.env.URL_DOMAIN;
 
 // Connect to DB
 mongoose.connect(process.env.linkDB, {
     useCreateIndex: true,
     useNewUrlParser: true,
     useUnifiedTopology: true
-}).then(console.log('MongoDB is connected'))
-    .catch(err => console.log(err.message))
+})
+.then(console.log('MongoDB is connected'))
+.catch(err => console.log(err.message))
 
 // Routes Modules
 const index = require('./routes/index');

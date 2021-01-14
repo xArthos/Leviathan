@@ -1,24 +1,16 @@
 // Modules
-const mongoose = require('mongoose');
-const sgMail = require('@sendgrid/mail');
-const Joi = require('@hapi/joi');
-const dotenv = require('dotenv').config();
 const router = require('express').Router();
 const multer = require('multer');
 const path = require('path');
-const { body, validationResult } = require('express-validator');
-
-// Models
-const User = require('../model/User');
-const { send } = require('@sendgrid/mail');
 
 // Controls
 const { 
     loginProcess,
     signUpProcess,
     logOutProcess,
-    checkRegistredUser,
-    authenticateToken,
+    checkRegistredEmail,
+    checkRegistredUsername,
+    authenticateAccount,
     validateUserInformations
     } = require('../controllers/userProcess');
 
@@ -59,10 +51,13 @@ router.get('/logOut', logOutProcess);
 ////////////////////////////////////////////////
 
 // Sign Up / Register
-router.post('/signUp', upload.single('profilePicture'), validateUserInformations, checkRegistredUser, signUpProcess);
+router.post('/signUp', upload.single('profilePicture'), validateUserInformations, checkRegistredEmail, checkRegistredUsername, signUpProcess);
 
 // Login
 router.post('/login', loginProcess);
+
+// Authenticate
+router.get('/auth/:token', authenticateAccount);
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

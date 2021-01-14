@@ -30,11 +30,11 @@ router.get('/', refreshToken, authenticateToken, (req, res) => {
 // POST Routes
 router.post('/editInfo', refreshToken, authenticateToken, editValidation, (req, res) => {
     const user = req.session.user;
-    console.log(user)
+    // console.log(user)
 
     User.findOneAndUpdate(user ,req.body , (err, data) => {
-        console.log(req.body)
-        console.log(data)
+        // console.log(req.body)
+        // console.log(data)
     })
 });
 

@@ -12,6 +12,9 @@ const RefreshTokens = require('../model/refreshTokens');
 const { registerValidation } = require('./validation');
 const { generateAccessToken } = require('./jwtToken');
 
+// SendGrid Settings
+sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -74,74 +77,109 @@ exports.loginProcess = async (req, res) => {
 };
 
 exports.signUpProcess = async (req, res) => {
-    // Hash Password Before Save it Into DB
 
-    // Setting a Salt Rounds
-    const saltRounds = 15;
-
-    // Create a Random Value Called salt/header
-    const salt = bcrypt.genSaltSync(saltRounds);
-
-    // Create Hash Result
-    const hashedPassword = bcrypt.hashSync(req.body.password, salt);
-    let cryptedPassword = hashedPassword;
-
-    // Create New User
-    let newUser;
-    if (!req.file) {
-        newUser = new User({
-            userName: req.body.userName,
-            name: {
-                lastName: req.body.lastName,
-                firstName: req.body.firstName
-            },
-            email: req.body.email,
-            password: cryptedPassword,
-            profilePicture: null,
-            profilePictureUrl: null
-        });
-    } else {
-        newUser = new User({
-            userName: req.body.userName,
-            name: {
-                lastName: req.body.lastName,
-                firstName: req.body.firstName
-            },
-            email: req.body.email,
-            password: cryptedPassword,
-            profilePicture: req.file,
-            profilePictureUrl: req.file.path.split('C:\\Users\\Arthos\\Documents\\GitHub\\Leviathan\\public\\')[1]
-        });
-    }
+    // Destructuring important datas
+    const { email, password, userName } = req.body;
 
     try {
+        User.findOne({ email, userName }, (err, user) => {
+            if (user) {
+                return res.status(400).json({ error: 'Email already registred' })
+            }
 
-        // Save New User in DB
-        newUser.save(() => {
-            res.redirect('/');
-        });
+            // Hash Password Before Save it Into DB
 
-        jwt.sign(newUser, process.env.EMAIL_SECRET, { expiresIn: '5m' });
+            // Setting a Salt Rounds
+            const saltRounds = 15;
 
-        // SendGrid Settings
-        sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+            // Create a Random Value Called salt/header
+            const salt = bcrypt.genSaltSync(saltRounds);
 
-        const msg = {
-            to: `${newUser.email}`,
-            from: "giampaololocascio@gmail.com",
-            subject: "Your registration on Leviathan",
-            text: "just a sample text with no reason XD",
-            html: "<strong>Signore</strong>"
-        };
+            // Create Hash Result
+            const hashedPassword = bcrypt.hashSync(password, salt);
 
-        sgMail.send(msg).then(() => {
-            console.log('Message sent')
-        }).catch((error) => {
-            console.log(error.response.body)
-            // console.log(error.response.body.errors[0].message)
-        });
+            // console.log('User infos');
+            // console.log(decoded);
+
+            // Create New User
+            let newUser;
+            if (!req.file) {
+                newUser = new User({
+                    userName: userName,
+                    name: {
+                        lastName: req.body.lastName,
+                        firstName: req.body.firstName
+                    },
+                    email: email,
+                    password: hashedPassword,
+                    profilePicture: null,
+                    profilePictureUrl: null
+                });
+            } else {
+                newUser = new User({
+                    userName: userName,
+                    name: {
+                        lastName: req.body.lastName,
+                        firstName: req.body.firstName
+                    },
+                    email: email,
+                    password: hashedPassword,
+                    profilePicture: req.body,
+                    profilePictureUrl: req.body.path.split('C:\\Users\\Arthos\\Documents\\GitHub\\Leviathan\\public\\')[1]
+                });
+            };
+
+            // Save New User in DB
+            newUser.save(() => {
+                res.redirect('/');
+            });
+
+            const token = jwt.sign(req.body, process.env.JWT_SECRET_KEY, { expiresIn: '20m' });
+
+            const msg = {
+                to: `${email}`,
+                from: "giampaololocascio@gmail.com",
+                subject: "Your registration on Leviathan",
+                text: "just a sample text with no reason XD",
+                html: `
+                    <h2>Click this link for activate your account</h2>
+                    <a href='${process.env.URL_DOMAIN}:${process.env.PORT}/user/auth/${token}'>${process.env.URL_DOMAIN}:${process.env.PORT}/user/auth/${token}</a>
+                `
+            };
+
+            sgMail.send(msg).then(() => {
+                console.log('Message sent');
+                res.redirect('/');
+            }).catch((error) => {
+                console.log(error)
+                // console.log(error.response.body.errors[0].message)
+            });
+        })
     } catch (err) {
         res.status(400).send(err);
+    };
+};
+
+exports.authenticateAccount = async (req, res) => {
+    const token = req.params.token;
+    console.log(token)
+
+    if (token) {
+        jwt.verify(token, process.env.JWT_SECRET_KEY, (err, decoded) => {
+            if (err) throw err
+
+            const { email, password, userName } = decoded;
+
+            User.findOneAndUpdate({ email: email }, { active: true }, (err, data) => {
+                if (err) throw err;
+
+                console.log(data)
+            });
+
+            res.redirect('/');
+        })
+    } else {
+        return res.json({ error: 'Something is wrong' });
     };
 };
 
@@ -171,25 +209,41 @@ exports.logOutProcess = (req, res) => {
 
 
 //### Functions - Middleware ###
-exports.checkRegistredUser = (req, res, next) => {
+exports.checkRegistredEmail = (req, res, next) => {
 
-    // Check if user exits
-    User.findOne({ email: req.body.email }, (err, data) => {
+    // Check if email exits
+    User.findOne(req.body, (err, data) => {
+        console.log(data)
         if (err) throw err
 
-        if (data) {
-            req.flash('signUpError', 'User already exits.');
-            res.redirect('/user/signUp');
-        } else {
+        if (data === null) {
             next();
+        } else if (data.email === req.body.email) {
+            req.flash('signUpError', 'This email is already used.');
+            return res.redirect('/user/signUp');
+        };
+    });
+};
+
+exports.checkRegistredUsername = (req, res, next) => {
+
+    // Check if username exits
+    User.findOne(req.body, (err, data) => {
+        if (err) throw err
+
+        if (data === null) {
+            next();
+        } else if (data.userName === req.body.userName) {
+            req.flash('signUpError', 'This username is already used.');
+            return res.redirect('/user/signUp');
         };
     });
 };
 
 exports.validateUserInformations = (req, res, next) => {
     // Validation of the datas
-    console.log(req.body)
-    console.log(req.file)
+    // console.log(req.body)
+    // console.log(req.file)
     const { error } = registerValidation(req.body);
     if (error) return res.status(400).send(error.details[0].message);
 
