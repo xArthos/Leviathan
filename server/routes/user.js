@@ -14,6 +14,8 @@ const {
     validateUserInformations
     } = require('../controllers/userProcess');
 
+const { userList } = require('../controllers/jsonResponse');
+
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 // Server Storage Uploaded Files - Settings
@@ -30,21 +32,33 @@ const upload = multer({
 });
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
 // GET Routes
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+// SignUp Page
 router.get('/signUp', (req, res) => {
+
+    if (req.session.newUserData) {
+        req.session.destroy();
+    };
+
     res.render('signUp', {
         signUpError: req.flash('signUpError')
     });
 });
 
+// SignIn Page
 router.get('/signIn', (req, res) => {
     res.render('signIn', {
         errorMsg: req.flash('errorMsg')
     });
 });
 
+// Logout Page
 router.get('/logOut', logOutProcess);
+
+// JSON - All user list
+router.get('/all', userList);
 
 ////////////////////////////////////////////////
 // POST Routes

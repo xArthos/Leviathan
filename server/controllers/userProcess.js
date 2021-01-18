@@ -79,16 +79,13 @@ exports.loginProcess = async (req, res) => {
 exports.signUpProcess = async (req, res) => {
 
     // Destructuring important datas
-    const { email, password, userName } = req.body;
+    const { email, password, userName } = req.session.newUserData;
 
     try {
         User.findOne({ email, userName }, (err, user) => {
-            if (user) {
-                return res.status(400).json({ error: 'Email already registred' })
-            }
 
-            // Hash Password Before Save it Into DB
-
+            /////////////////////////////////////////////////////////
+            // * Hash Password Before Save it Into DB
             // Setting a Salt Rounds
             const saltRounds = 15;
 
@@ -97,45 +94,41 @@ exports.signUpProcess = async (req, res) => {
 
             // Create Hash Result
             const hashedPassword = bcrypt.hashSync(password, salt);
+            /////////////////////////////////////////////////////////
 
-            // console.log('User infos');
-            // console.log(decoded);
-
-            // Create New User
+            // * Create New User
             let newUser;
             if (!req.file) {
                 newUser = new User({
                     userName: userName,
                     name: {
-                        lastName: req.body.lastName,
-                        firstName: req.body.firstName
+                        lastName: req.session.newUserData.lastName,
+                        firstName: req.session.newUserData.firstName
                     },
                     email: email,
                     password: hashedPassword,
-                    profilePicture: null,
-                    profilePictureUrl: null
+                    profilePicture: null
                 });
             } else {
                 newUser = new User({
                     userName: userName,
                     name: {
-                        lastName: req.body.lastName,
-                        firstName: req.body.firstName
+                        lastName: req.session.newUserData.lastName,
+                        firstName: req.session.newUserData.firstName
                     },
                     email: email,
                     password: hashedPassword,
-                    profilePicture: req.body,
-                    profilePictureUrl: req.body.path.split('C:\\Users\\Arthos\\Documents\\GitHub\\Leviathan\\public\\')[1]
+                    profilePicture: req.file
                 });
             };
 
-            // Save New User in DB
-            newUser.save(() => {
-                res.redirect('/');
-            });
+            // * Save New User in DB
+            newUser.save();
 
+            // * Create an Activation Token
             const token = jwt.sign(req.body, process.env.JWT_SECRET_KEY, { expiresIn: '20m' });
 
+            // * Create an Activation Email
             const msg = {
                 to: `${email}`,
                 from: "giampaololocascio@gmail.com",
@@ -147,12 +140,16 @@ exports.signUpProcess = async (req, res) => {
                 `
             };
 
-            sgMail.send(msg).then(() => {
+            // * Send Activation Email to the New User
+            sgMail.send(msg)
+            .then(() => {
+                req.session.destroy();
                 console.log('Message sent');
                 res.redirect('/');
-            }).catch((error) => {
-                console.log(error)
-                // console.log(error.response.body.errors[0].message)
+            })
+            .catch((error) => {
+                //console.log(error)
+                console.log(error.response.body.errors[0].message)
             });
         })
     } catch (err) {
@@ -162,7 +159,7 @@ exports.signUpProcess = async (req, res) => {
 
 exports.authenticateAccount = async (req, res) => {
     const token = req.params.token;
-    console.log(token)
+    console.log(token);
 
     if (token) {
         jwt.verify(token, process.env.JWT_SECRET_KEY, (err, decoded) => {
@@ -189,10 +186,11 @@ exports.authenticateAccount = async (req, res) => {
 
 //### Functions GET Routes ###
 exports.logOutProcess = (req, res) => {
+
     // Erase the Refresh Token from DB
     const refreshToken = req.session.refreshToken;
     RefreshTokens.findOneAndDelete({ token: refreshToken }, () => {
-        console.log('Refresh Token deleted from DB');
+        console.log('** Refresh Token deleted from DB **');
     });
 
     // Erase the Whole Session
@@ -200,6 +198,8 @@ exports.logOutProcess = (req, res) => {
         if (err) {
             return console.log(err);
         }
+
+        console.log('** User Logged out **');
         res.redirect('/');
     });
 };
@@ -209,16 +209,30 @@ exports.logOutProcess = (req, res) => {
 
 
 //### Functions - Middleware ###
+exports.validateUserInformations = (req, res, next) => {
+
+    // Validation of the datas
+    const { error } = registerValidation(req.body);
+
+    if (error) return res.status(400).send(error.details[0].message);
+
+    console.log('** All Informations are insert correctly **');
+    req.session.newUserData = req.body;
+    next();
+};
+
 exports.checkRegistredEmail = (req, res, next) => {
+    const { email } = req.session.newUserData;
 
     // Check if email exits
-    User.findOne(req.body, (err, data) => {
-        console.log(data)
+    User.findOne({ email }, (err, data) => {
+
         if (err) throw err
 
         if (data === null) {
+            console.log('** Email not registred **');
             next();
-        } else if (data.email === req.body.email) {
+        } else if (data.email === email) {
             req.flash('signUpError', 'This email is already used.');
             return res.redirect('/user/signUp');
         };
@@ -226,26 +240,18 @@ exports.checkRegistredEmail = (req, res, next) => {
 };
 
 exports.checkRegistredUsername = (req, res, next) => {
+    const { userName } = req.session.newUserData;
 
     // Check if username exits
-    User.findOne(req.body, (err, data) => {
+    User.findOne({ userName }, (err, data) => {
         if (err) throw err
 
         if (data === null) {
+            console.log('** Username not used **');
             next();
-        } else if (data.userName === req.body.userName) {
+        } else if (data.userName === userName) {
             req.flash('signUpError', 'This username is already used.');
             return res.redirect('/user/signUp');
         };
     });
-};
-
-exports.validateUserInformations = (req, res, next) => {
-    // Validation of the datas
-    // console.log(req.body)
-    // console.log(req.file)
-    const { error } = registerValidation(req.body);
-    if (error) return res.status(400).send(error.details[0].message);
-
-    next();
 };

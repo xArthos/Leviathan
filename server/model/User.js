@@ -66,10 +66,6 @@ const userSchema = new Schema({
             type: Number
         }
     },
-    profilePictureUrl: {
-        type: String
-    },
-
     active: {
         type: Boolean,
         default: false

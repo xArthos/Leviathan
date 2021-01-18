@@ -2,6 +2,7 @@
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const express = require('express');
+const cors = require('cors');
 const mongoose = require('mongoose');
 const sgMail = require('@sendgrid/mail');
 const session = require('express-session');
@@ -10,8 +11,9 @@ const app = express();
 require('dotenv').config();
 
 // Server Settings
-app.use(express.static(`${__dirname}/public`));             // Static Folder
+app.use(express.static(`${process.cwd()}/public`));         // Static Folder
 app.set('view engine', 'hbs');                              // View Engine
+app.use(cors());                                            // Cross connection
 app.use(cookieParser());                                    // CookieParser
 app.use(bodyParser.urlencoded({ extended: false }));        // BodyParser
 app.use(bodyParser.json());                                 // BodyParser Json
@@ -28,8 +30,8 @@ app.use(session({
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);             // SendGrid
 
 // URL Setting
-const PORT = process.env.PORT;
-const host = process.env.URL_DOMAIN;
+const PORT = process.env.PORT || 8010;
+const host = process.env.URL_DOMAIN || 'localhost';
 
 // Connect to DB
 mongoose.connect(process.env.linkDB, {
