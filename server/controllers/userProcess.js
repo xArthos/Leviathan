@@ -1,26 +1,22 @@
 // Modules
-const sgMail = require('@sendgrid/mail');
-const jwt = require('jsonwebtoken');
-const bcrypt = require('bcrypt');
-const multer = require('multer');
+import sgMail from '@sendgrid/mail';
+import jwt from 'jsonwebtoken';
+import bcrypt from 'bcrypt';
 
 // Models
-const User = require('../model/User');
-const RefreshTokens = require('../model/refreshTokens');
+import User from '../model/User.js';
+import RefreshTokens from '../model/refreshTokens.js';
 
 // Controllers
-const { registerValidation } = require('./validation');
-const { generateAccessToken } = require('./jwtToken');
-
-// SendGrid Settings
-sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+import { registerValidation } from './validation.js';
+import { generateAccessToken } from './jwtToken.js';
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
 //### Functions - POST Routes ###
-exports.loginProcess = async (req, res) => {
+export const loginProcess = async (req, res) => {
 
     // user input data
     const { email, password } = req.body;
@@ -76,7 +72,7 @@ exports.loginProcess = async (req, res) => {
     });
 };
 
-exports.signUpProcess = async (req, res) => {
+export const signUpProcess = async (req, res) => {
 
     // Destructuring important datas
     const { email, password, userName } = req.session.newUserData;
@@ -157,7 +153,7 @@ exports.signUpProcess = async (req, res) => {
     };
 };
 
-exports.authenticateAccount = async (req, res) => {
+export const authenticateAccount = async (req, res) => {
     const token = req.params.token;
     console.log(token);
 
@@ -185,7 +181,7 @@ exports.authenticateAccount = async (req, res) => {
 
 
 //### Functions GET Routes ###
-exports.logOutProcess = (req, res) => {
+export const logOutProcess = (req, res) => {
 
     // Erase the Refresh Token from DB
     const refreshToken = req.session.refreshToken;
@@ -209,7 +205,7 @@ exports.logOutProcess = (req, res) => {
 
 
 //### Functions - Middleware ###
-exports.validateUserInformations = (req, res, next) => {
+export const validateUserInformations = (req, res, next) => {
 
     // Validation of the datas
     const { error } = registerValidation(req.body);
@@ -221,7 +217,7 @@ exports.validateUserInformations = (req, res, next) => {
     next();
 };
 
-exports.checkRegistredEmail = (req, res, next) => {
+export const checkRegistredEmail = (req, res, next) => {
     const { email } = req.session.newUserData;
 
     // Check if email exits
@@ -239,7 +235,7 @@ exports.checkRegistredEmail = (req, res, next) => {
     });
 };
 
-exports.checkRegistredUsername = (req, res, next) => {
+export const checkRegistredUsername = (req, res, next) => {
     const { userName } = req.session.newUserData;
 
     // Check if username exits

@@ -1,10 +1,10 @@
 // Modules
-const router = require('express').Router();
-const multer = require('multer');
-const path = require('path');
+import express from 'express';
+import multer from 'multer';
+import path from 'path';
 
 // Controls
-const { 
+import { 
     loginProcess,
     signUpProcess,
     logOutProcess,
@@ -12,9 +12,14 @@ const {
     checkRegistredUsername,
     authenticateAccount,
     validateUserInformations
-    } = require('../controllers/userProcess');
+    } from '../controllers/userProcess.js';
 
-const { userList } = require('../controllers/jsonResponse');
+import { userList } from '../controllers/jsonResponse.js';
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+// Setting the router
+const router = express.Router();
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -76,4 +81,4 @@ router.get('/auth/:token', authenticateAccount);
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 // Export
-module.exports = router
+export default router;

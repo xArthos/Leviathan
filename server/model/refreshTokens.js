@@ -1,12 +1,10 @@
 // Modules
-const mongoose = require('mongoose');
-const { Schema } = require('mongoose');
+import mongoose from 'mongoose';
+import Schema from 'mongoose';
 
 // Setting a Schema
-const refreshTokenSchema = new Schema({
-    token: {
-        type: String
-    },
+const refreshTokenSchema = mongoose.Schema({
+    token: String,
     user: {
         type: Schema.Types.ObjectId,
         ref: 'User'
@@ -24,4 +22,4 @@ refreshTokenSchema.index( {"expire_at": 1 }, { expireAfterSeconds: 5 } );
 const RefreshTokens = mongoose.model('RefreshTokens', refreshTokenSchema);
 
 // Export Module
-module.exports = RefreshTokens;
+export default RefreshTokens;

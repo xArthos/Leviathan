@@ -1,8 +1,9 @@
 // Modules
 import React, { Component } from 'react';
+import { Link } from "react-router-dom";
 
 // Bootstrap Components
-import { Navbar, Nav, NavDropdown, Button } from 'react-bootstrap';
+import { Navbar, Nav, NavDropdown } from 'react-bootstrap';
 
 // Fontawesome
 import { library } from '@fortawesome/fontawesome-svg-core';
@@ -13,44 +14,49 @@ import { faSignInAlt } from '@fortawesome/free-solid-svg-icons';
 import { faServer } from '@fortawesome/free-solid-svg-icons';
 import { faSignOutAlt } from '@fortawesome/free-solid-svg-icons';
 
-
 library.add(faStroopwafel);
 
-export default class MainNavBar extends Component {
+export default class NavBar extends Component {
 
     constructor(props) {
         super(props);
 
         this.state = {
-            name: null
+            name: 'John Doe',
+            isLogged: false
         }
     };
-
     render() {
         return (
             <Navbar bg="dark" expand="lg" variant="dark">
-                <Navbar.Brand href="/">React-Bootstrap</Navbar.Brand>
+                <Link className="navbar-brand" to='/'>React-Bootstrap</Link>
                 <Navbar.Toggle aria-controls="basic-navbar-nav" />
                 <Navbar.Collapse id="basic-navbar-nav">
 
                     <Nav className="mr-auto">
-                        <Nav.Link href="/">Home</Nav.Link>
-                        <Nav.Link href="#link">Link</Nav.Link>
+                        <Link className="nav-link" to='/'>Home</Link>
+                        <Link className="nav-link" to='/'>Home</Link>
                         <NavDropdown title="Dropdown" id="basic-nav-dropdown">
-                            <NavDropdown.Item href="#action/3.1">Action</NavDropdown.Item>
-                            <NavDropdown.Item href="#action/3.2">Another action</NavDropdown.Item>
-                            <NavDropdown.Item href="#action/3.3">Something</NavDropdown.Item>
+                            <Link className="dropdown-item" to='#action/3.1'>Home</Link>
+                            <Link className="dropdown-item" to='#action/3.2'>Home</Link>
+                            <Link className="dropdown-item" to={`/about/${this.state.name}`}>About</Link>
                             <NavDropdown.Divider />
-                            <NavDropdown.Item href="#action/3.4">Separated link</NavDropdown.Item>
+                            <Link className="dropdown-item" to='/contact'>Contact</Link>
                         </NavDropdown>
                     </Nav>
 
                     <Nav>
-                        <Nav.Link href="/user/signIn"><FontAwesomeIcon icon={faSignInAlt}></FontAwesomeIcon> Sign-in</Nav.Link>
-                        <Button variant="warning" href="#user/signUp"><FontAwesomeIcon icon={faServer}></FontAwesomeIcon> Become a member!</Button>
-
-                        <Nav.Link href="#profile">Welcome {this.state.name}</Nav.Link>
-                        <Nav.Link href="#user/logOut"><FontAwesomeIcon icon={faSignOutAlt} rotation={180}></FontAwesomeIcon> Log-out</Nav.Link>
+                        {
+                            this.state.isLogged ?
+                                <>
+                                    <Link className="nav-link" to='/profile'>Welcome {this.state.name}!</Link>
+                                    <Link className="nav-link" to='/user/logOut'><FontAwesomeIcon icon={faSignOutAlt} rotation={180}></FontAwesomeIcon> Log out</Link>
+                                </> :
+                                <>
+                                    <Link className="nav-link" to='/user/signIn'><FontAwesomeIcon icon={faSignInAlt}></FontAwesomeIcon> Log In</Link>
+                                    <Link className="btn btn-warning" to='/user/signUp'><FontAwesomeIcon icon={faServer}></FontAwesomeIcon> Become a member!</Link>
+                                </>
+                        }
                     </Nav>
 
                 </Navbar.Collapse>

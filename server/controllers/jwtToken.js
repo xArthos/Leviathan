@@ -1,15 +1,15 @@
 // Modules
-const jwt = require('jsonwebtoken');
-const bcrypt = require('bcrypt');
+import jwt from 'jsonwebtoken';
 
 // Models
-const RefreshTokens = require('../model/refreshTokens');
+import RefreshTokens from '../model/refreshTokens.js';
+
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
 //### Functions - Middleware ###
-exports.authenticateToken = (req, res, next) => {
+export const authenticateToken = (req, res, next) => {
     // const authHeader = req.headers['authorization'];
     // const token = authHeader && authHeader.split(' ')[1];
 
@@ -28,7 +28,7 @@ exports.authenticateToken = (req, res, next) => {
     });
 };
 
-exports.refreshToken = (req, res, next) => {
+export const refreshToken = (req, res, next) => {
     // Set the Current Refrsh Token
     const refreshToken = req.session.refreshToken;
     // console.log(refreshToken)
@@ -68,6 +68,6 @@ exports.refreshToken = (req, res, next) => {
 
 
 //### Functions ###
-exports.generateAccessToken = (user) => {
+export const generateAccessToken = (user) => {
     return jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '15s' });
 };

@@ -1,8 +1,8 @@
 // Module
-const Joi = require('joi');
+import Joi from 'joi';
 
 // Register Validation
-exports.registerValidation = (data) => {
+export const registerValidation = (data) => {
 
     const schema = Joi.object().keys({
         userName: Joi.string().min(2).max(255).required(),
@@ -19,7 +19,7 @@ exports.registerValidation = (data) => {
 };
 
 // edit Validation
-exports.editValidation = (data) => {
+export const editValidation = (data) => {
 
     const schema = Joi.object().keys({
         userName: Joi.string().min(2).max(255).optional(),

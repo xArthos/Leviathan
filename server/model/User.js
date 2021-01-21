@@ -1,9 +1,8 @@
 // Modules
-const mongoose = require('mongoose');
-const { Schema } = require('mongoose');
+import mongoose from 'mongoose';
 
 // Setting a Schema
-const userSchema = new Schema({
+const userSchema = mongoose.Schema({
     type: {
         type: String,
         default: 'user'
@@ -41,30 +40,14 @@ const userSchema = new Schema({
         max: 1024
     },
     profilePicture: {
-        fieldname: {
-            type: String
-        },
-        originalname: {
-            type: String
-        },
-        encoding: {
-            type: String
-        },
-        mimetype: {
-            type: String
-        },
-        destination: {
-            type: String
-        },
-        filename: {
-            type: String
-        },
-        path: {
-            type: String
-        },
-        size: {
-            type: Number
-        }
+        fieldname: String,
+        originalname: String,
+        encoding: String,
+        mimetype: String,
+        destination: String,
+        filename: String,
+        path: String,
+        size: Number
     },
     active: {
         type: Boolean,
@@ -81,4 +64,4 @@ userSchema.virtual('fullName').get(() => {
 const User = mongoose.model('User', userSchema);
 
 // Export Module
-module.exports = User;
+export default User;

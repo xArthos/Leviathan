@@ -1,16 +1,22 @@
 // Modules
-const router = require('express').Router();
+import express from 'express';
 
 // Models
-const User = require('../model/User');
+import User from '../model/User.js';
 
 // Controllers
-const { 
+import { 
     authenticateToken,
     refreshToken
-    } = require('../controllers/jwtToken');
-const  { editValidation } = require('../controllers/validation')
+    } from '../controllers/jwtToken.js';
+import  { editValidation } from '../controllers/validation.js';
 
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+// Setting the router
+const router = express.Router();
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 // GET Routes
 router.get('/', refreshToken, authenticateToken, (req, res) => {
@@ -39,4 +45,4 @@ router.post('/editInfo', refreshToken, authenticateToken, editValidation, (req, 
 });
 
 // Export
-module.exports = router;
+export default router;
