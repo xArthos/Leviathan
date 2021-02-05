@@ -1,6 +1,7 @@
 // Modules
 import React, { Component } from 'react';
 import { Link } from "react-router-dom";
+import { Redirect } from 'react-router';
 
 // Bootstrap Components
 import { Navbar, Nav, NavDropdown } from 'react-bootstrap';
@@ -16,51 +17,103 @@ import { faSignOutAlt } from '@fortawesome/free-solid-svg-icons';
 
 library.add(faStroopwafel);
 
-export default class NavBar extends Component {
 
+///////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////
+
+
+// Main Component
+export default class MainNavBar extends Component {
+
+    // Constructor
     constructor(props) {
         super(props);
 
+        let data = JSON.parse(localStorage.getItem('Leviathan'));
+
+        if (data === null) {
+            data = false
+        };
+
+        // State
         this.state = {
-            name: 'Arthos',
-            isLogged: false
-        }
+            user: data.user,
+            accessToken: data.accessToken,
+            refreshToken: data.refreshToken,
+            redirect: false
+        };
+
+        // console.log(this.state);
+
+        this.logOut = this.logOut.bind(this);
     };
+
+    logOut = (event) => {
+        event.preventDefault();
+
+        localStorage.removeItem('Leviathan');
+
+        this.setState({
+            user: undefined,
+            accessToken: undefined,
+            refreshToken: undefined,
+            redirect: true
+        });
+    };
+
     render() {
         return (
-            <Navbar bg="dark" expand="lg" variant="dark">
-                <Link className="navbar-brand" to='/'>React-Bootstrap</Link>
-                <Navbar.Toggle aria-controls="basic-navbar-nav" />
-                <Navbar.Collapse id="basic-navbar-nav">
+            <>
+                <Navbar bg="dark" expand="lg" variant="dark">
+                    <Link className="navbar-brand" to='/'><img
+                        src="/images/leviatahan_logo_s.png"
+                        width="110"
+                        height="75"
+                        className="d-inline-block align-top"
+                        alt="Leviathan logo"
+                    /></Link>
+                    <Navbar.Toggle aria-controls="basic-navbar-nav" />
+                    <Navbar.Collapse id="basic-navbar-nav">
 
-                    <Nav className="mr-auto">
-                        <Link className="nav-link" to='/'>Home</Link>
-                        <Link className="nav-link" to='/'>Home</Link>
-                        <NavDropdown title="Dropdown" id="basic-nav-dropdown">
-                            <Link className="dropdown-item" to='#action/3.1'>Home</Link>
-                            <Link className="dropdown-item" to='#action/3.2'>Home</Link>
-                            <Link className="dropdown-item" to={`/about/${this.state.name}`}>About</Link>
-                            <NavDropdown.Divider />
-                            <Link className="dropdown-item" to='/contact'>Contact</Link>
-                        </NavDropdown>
-                    </Nav>
+                        <Nav className="mr-auto">
+                            <Link className="nav-link" to='/'>Home</Link>
+                            <Link className="nav-link" to='/'>Home</Link>
+                            <NavDropdown title="Dropdown" id="basic-nav-dropdown">
+                                <Link className="dropdown-item" to='/usersList'>All Users</Link>
+                                <Link className="dropdown-item" to='#action/3.2'>Home</Link>
+                                <Link className="dropdown-item" to={`/about/${this.state.name}`}>About</Link>
+                                <NavDropdown.Divider />
+                                <Link className="dropdown-item" to='/contact'>Contact</Link>
+                            </NavDropdown>
+                        </Nav>
 
-                    <Nav>
-                        {
-                            this.state.isLogged ?
-                                <>
-                                    <Link className="nav-link" to='/profile'>Welcome {this.state.name}!</Link>
-                                    <Link className="nav-link" to='/user/logOut'><FontAwesomeIcon icon={faSignOutAlt} rotation={180}></FontAwesomeIcon> Log out</Link>
-                                </> :
-                                <>
-                                    <Link className="nav-link" to='/user/signIn'><FontAwesomeIcon icon={faSignInAlt}></FontAwesomeIcon> Log In</Link>
-                                    <Link className="btn btn-warning" to='/user/signUp'><FontAwesomeIcon icon={faServer}></FontAwesomeIcon> Become a member!</Link>
-                                </>
-                        }
-                    </Nav>
+                        <Nav>
+                            {
+                                this.state.user ?
+                                    <>
+                                        <Link className="nav-link" to={`/profile:${this.state.user.userName}`}>Welcome {this.state.user.userName}!</Link>
+                                        <Link className="nav-link" to='/logOut' onClick={this.logOut}><FontAwesomeIcon icon={faSignOutAlt} rotation={180} /> Log out</Link>
+                                    </> :
+                                    <>
+                                        <Link className="nav-link" to='/login'><FontAwesomeIcon icon={faSignInAlt} /> Log In</Link>
+                                        <Link className="btn btn-warning" to='/register'><FontAwesomeIcon icon={faServer} /> Become a member!</Link>
+                                    </>
+                            }
+                        </Nav>
 
-                </Navbar.Collapse>
-            </Navbar>
+                    </Navbar.Collapse>
+                </Navbar>
+
+                {
+                    this.state.redirect ?
+                        <Redirect to={{
+                            pathname: '/success',
+                            state: {
+                                message: 'Loged Out succesufully'
+                            }
+                        }} /> : null
+                }
+            </>
         );
     };
 };

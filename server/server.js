@@ -11,15 +11,15 @@ import dotenv from 'dotenv';
 const app = express();
 
 // Server Settings
-dotenv.config();                                            // .env file
-app.use(express.static(`${process.cwd()}/public`));         // Static Folder
-app.set('view engine', 'hbs');                              // View Engine
-app.use(cors());                                            // Cross connection
-app.use(cookieParser());                                    // CookieParser
-app.use(bodyParser.urlencoded({ extended: false }));        // BodyParser
-app.use(bodyParser.json());                                 // BodyParser Json
-app.use(express.json());                                    // Use Json files
-app.use(flash());                                           // Flash
+dotenv.config();                                                        // .env file
+app.use(express.static(`${process.cwd()}/public`));                     // Static Folder
+app.set('view engine', 'hbs');                                          // View Engine
+app.use(cors());                                                        // Cross connection
+app.use(cookieParser());                                                // CookieParser
+app.use(bodyParser.urlencoded({ extended: false }));                    // BodyParser
+app.use(bodyParser.json());                                             // BodyParser Json
+app.use(express.json());                                                // Use Json files
+app.use(flash());                                                       // Flash
 app.use(session({
     secret: process.env.SESSION_SECRET,
     cookie: {
@@ -27,8 +27,8 @@ app.use(session({
     },
     resave: true,
     saveUninitialized: true
-}));                                                        // Session
-sgMail.setApiKey(process.env.SENDGRID_API_KEY);             // SendGrid
+}));                                                                    // Session
+sgMail.setApiKey(process.env.SENDGRID_API_KEY);                         // SendGrid
 
 // URL Setting
 const PORT = process.env.PORT || 8010;
@@ -47,13 +47,9 @@ mongoose.set('useFindAndModify', false);
 
 // Routes Modules
 import index from './routes/index.js';
-import user from './routes/user.js';
-import profile from './routes/profile.js';
 
 // Server Routes
 app.use('/', index);
-app.use('/user', user);
-app.use('/profile', profile);
 
 // Server Listening
 app.listen(PORT, host, () => {
