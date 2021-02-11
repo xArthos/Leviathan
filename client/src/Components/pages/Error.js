@@ -1,5 +1,4 @@
 // Modules
-import { faWindowRestore } from '@fortawesome/free-solid-svg-icons';
 import React, { Component } from 'react';
 import { Jumbotron, Container } from 'react-bootstrap';
 

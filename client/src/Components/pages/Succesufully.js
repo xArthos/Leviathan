@@ -16,10 +16,10 @@ export default class Succesufully extends Component {
             message: this.props.location.state.message
         };
 
-        // const timer = window.
-        setTimeout(() => { this.props.history.push('/') }, 1800);
-
-        // clearTimeout(timer)
+        setTimeout(() => { 
+            this.props.history.push('/');
+            window.location.reload(true);
+        }, 1800);
     };
 
     render() {

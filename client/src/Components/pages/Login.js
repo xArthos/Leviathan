@@ -48,7 +48,6 @@ export default class Login extends Component {
                             state: {
                                 message: 'Loged In succesufully'
                             }});
-                        window.location.reload(true);
                         break;
 
                     default:

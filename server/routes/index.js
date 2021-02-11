@@ -6,12 +6,14 @@ import path from 'path';
 
 // Controllers
 import { usersList } from '../controllers/get.js'
-import { 
+import {
     validateUserInformations,
     signUp,
     login,
     checkExitEmail,
-    checkExitUsername } from '../controllers/post.js'
+    checkExitUsername,
+    imgUpload
+} from '../controllers/post.js'
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -25,7 +27,22 @@ const favicon = fs.readFileSync(`${process.cwd()}/public/images/ico/favicon.ico`
 
 // Server Storage Uploaded Files - Settings
 const storage = multer.diskStorage({
-    destination: `${process.cwd()}/public/images/uploadedPics`,
+    destination: (req, file, cb) => {
+
+        // Preset Infos
+        const preset = JSON.parse(JSON.stringify(req.body));
+
+        // Destination of the file
+        const dir = `C:/Users/Arthos/Documents/GitHub/leviathan/client/public/images/profilePicture/${preset.userId}/`;
+
+        // Create a new folder if it doesn't exit
+        if (!fs.existsSync(dir)) {
+            fs.mkdirSync(dir);
+        };
+
+        // Callback
+        cb(null, dir);
+    },
     filename: (req, file, cb) => {
         cb(null, `${Date.now()}_profilePic${path.extname(file.originalname)}`);
     }
@@ -42,6 +59,7 @@ router.get('/usersList', usersList);
 // POST
 router.post('/login', login);
 router.post('/register', upload.single('profilePicture'), validateUserInformations, checkExitEmail, checkExitUsername, signUp);
+router.post('/upload', upload.single('file'), imgUpload);
 
 // signUpProcess
 

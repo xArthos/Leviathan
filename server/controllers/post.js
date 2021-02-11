@@ -284,6 +284,82 @@ export const authenticate = async (req, res) => {
     };
 };
 
+export const edit = async (req, res) => {
+
+    // Destructuring important datas
+    const { email, password, userName, firstName, lastName } = JSON.parse(req.body.body);
+
+    try {
+
+        // * Update User's Info
+        User.findOneAndUpdate({ email: email }, { active: true }, (err, data) => {
+            if (err) return res.send(400).send('Something went wrong');
+
+            console.log(data)
+        });
+
+        let newUser;
+        if (!req.file) {
+            newUser = new User({
+                userName: userName,
+                name: {
+                    lastName: lastName,
+                    firstName: firstName
+                },
+                email: email,
+                password: hashedPassword,
+                profilePicture: null
+            });
+        } else {
+            newUser = new User({
+                userName: userName,
+                name: {
+                    lastName: lastName,
+                    firstName: firstName
+                },
+                email: email,
+                password: hashedPassword,
+                profilePicture: req.file
+            });
+        };
+
+        // * Create an Activation Email
+        const msg = {
+            to: `${email}`,
+            from: "giampaololocascio@gmail.com",
+            subject: "Your registration on Leviathan",
+            text: "just a sample text with no reason XD",
+            html: `
+                    <h2>Click this link for activate your account</h2>
+                    <a href='${process.env.URL_DOMAIN}:${process.env.PORT}/user/auth/${token}'>${process.env.URL_DOMAIN}:${process.env.PORT}/user/auth/${token}</a>
+                `
+        };
+
+        // * Send Activation Email to the New User
+        sgMail.send(msg)
+            .then(() => {
+                console.log('Message sent');
+                res.status(200).send('User Created');
+            })
+            .catch((error) => {
+                console.log(error)
+                console.log(error.response.body.errors[0].message)
+            });
+    } catch (err) {
+        res.status(400);
+    };
+};
+
+export const imgUpload = async (req, res) => {
+    const { filename } = req.file;
+    const preset = JSON.parse(JSON.stringify(req.body));
+    console.log(preset);
+
+    res.status(200).send({
+        secure_url: `/images/profilePicture/${preset.userId}/${filename}`
+    });
+};
+
 //### Functions - Middleware ###
 export const validateUserInformations = (req, res, next) => {
 
