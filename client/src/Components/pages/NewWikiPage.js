@@ -247,25 +247,6 @@ export default class NewWikiPage extends Component {
                     onSubmit={this.requestHandler}
                     ref={form => this.form = form}>
 
-                    {/* <Editor
-                        initialValue='<p>This is the initial content of the editor</p>'
-                        apiKey='nd3pgzgh8vud9if4k8p7mw0xr4coy0wlmsau7yamqetkwlmx'
-                        cloudChannel='5-stable'
-                        textareaName='wikiPage'
-                        init={{
-                            height: 1000,
-                            menubar: false,
-                            skin: 'snow',
-                            icons: 'jam',
-                            plugins: 'print preview paste importcss searchreplace autolink autosave save directionality code visualblocks visualchars fullscreen image link media template codesample table charmap hr pagebreak nonbreaking anchor toc insertdatetime advlist lists wordcount imagetools textpattern noneditable help charmap quickbars emoticons',
-                            toolbar: 'undo redo | bold italic underline strikethrough | fontselect fontsizeselect formatselect | alignleft aligncenter alignright alignjustify | outdent indent |  numlist bullist | forecolor backcolor removeformat | pagebreak | charmap emoticons | fullscreen  preview save print | insertfile image media template link anchor codesample | ltr rtl',
-                            image_caption: true,
-                            paste_data_images: true,
-                            file_picker_callback: false
-                        }}
-                        onEditorChange={this.handleEditorChange}
-                    /> */}
-
                     <CKEditor
                         editor={ BalloonEditor }
                         data="<h1>Hello from CKEditor 5!</h1>"
