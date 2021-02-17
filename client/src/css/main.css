@@ -11,11 +11,7 @@ body {
     min-height: 100vh;
 }
 
-header {
-    font-size: 2rem;
-}
-
-form button {
+/* form button {
     color: #ff6f47;
     background: #f7fffe;
     cursor: pointer;
@@ -88,10 +84,10 @@ form button:hover {
 .completed {
     text-decoration: line-through;
     opacity: 0.5;
-}
+} */
 
   /*CUSTOM SELECTOR */
-select {
+/* select {
     -webkit-appearance: none;
     -moz-appearance: none;
     -ms-appearance: none;
@@ -100,10 +96,10 @@ select {
     box-shadow: none;
     border: 0 !important;
     background-image: none;
-}
+} */
 
   /* Custom Select */
-.select {
+/* .select {
     margin: 1rem;
     position: relative;
     overflow: hidden;
@@ -113,10 +109,10 @@ select {
     font-family: "Poppins", sans-serif;
     cursor: pointer;
     width: 12rem;
-}
+} */
 
   /* Arrow */
-.select::after {
+/* .select::after {
     content: "\25BC";
     position: absolute;
     top: 0;
@@ -125,7 +121,7 @@ select {
     background: #ff6f47;
     cursor: pointer;
     pointer-events: none;
-}
+} */
 
   /* Transition */
 /*

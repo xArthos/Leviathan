@@ -45,3 +45,8 @@
         transform: rotate(360deg);
     }
 }
+
+.top-right {
+    top: 6%;
+    right: 10%;
+}

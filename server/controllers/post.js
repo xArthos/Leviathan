@@ -3,6 +3,7 @@ import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import Joi from 'joi';
 import sgMail from '@sendgrid/mail';
+import fs from 'fs';
 
 // Models
 import User from '../model/User.js';
@@ -351,13 +352,31 @@ export const edit = async (req, res) => {
 };
 
 export const imgUpload = async (req, res) => {
-    const { filename } = req.file;
-    const preset = JSON.parse(JSON.stringify(req.body));
-    console.log(preset);
 
-    res.status(200).send({
-        secure_url: `/images/profilePicture/${preset.userId}/${filename}`
-    });
+    try {
+        const { path, mimetype } = req.file;
+
+        const file = fs.readFileSync(path);
+        const base64 = Buffer.from(file).toString('base64');
+        const dataToSend = `data:${mimetype};base64,${base64}`;
+
+        const user = JSON.parse(JSON.stringify(req.body));
+        //todo SAVE THE IMAGE ON DB - TO BE DONE
+        User.findOneAndUpdate({ _id: user.userId }, { profilePicture: dataToSend }, { upsert: true }, (err, res) => {
+            if (err) { throw err; }
+            else { console.log("Updated"); }
+        })
+
+        // Send the image to the front-end
+        res.status(200).send({
+            imageUploaded: dataToSend
+        });
+    } catch (error) {
+        res.status(400).send({
+            message: 'Error in the file uploading process'
+        });
+    }
+
 };
 
 //### Functions - Middleware ###

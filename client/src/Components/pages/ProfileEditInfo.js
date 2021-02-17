@@ -9,11 +9,11 @@ import request from 'superagent';
 
 // Fontawesome
 import { library } from '@fortawesome/fontawesome-svg-core';
-// import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faStroopwafel } from '@fortawesome/free-solid-svg-icons';
-// import { ThemeConsumer } from 'react-bootstrap/esm/ThemeProvider';
+
 // Icons
-// import { faPlus } from '@fortawesome/free-solid-svg-icons';
+import { faPen } from '@fortawesome/free-solid-svg-icons';
 
 library.add(faStroopwafel);
 
@@ -62,7 +62,6 @@ const PersonalArea = () => {
     let [editUsername, setEditUsername] = useState(false);
     let [editFirstName, setEditFirstName] = useState(false);
     let [editLastName, setEditLastName] = useState(false);
-
     let [editEmail, setEditEmail] = useState(false);
     let [editPassword, setEditPassword] = useState(false);
 
@@ -308,39 +307,70 @@ const PersonalArea = () => {
 
 export default class ProfileEditInfo extends Component {
 
+
+
+
+
     // Constructor
     constructor(props) {
         super(props);
 
-        // Data of the logged User
+        // Logged User
         const loggedUser = JSON.parse(localStorage.getItem('Leviathan'));
 
-        // Redirect to the login page if there is no User logged
+        //* State
+        // Set the State if there's not a User logged
         if (loggedUser === null) {
-            // State
             this.state = {
-                guest: true
+                isLogged: false
             };
         } else {
-            // State
             this.state = {
+
+                // Logged User
+                isLogged: true,
+
+                // User's Infos
                 user: loggedUser.user,
+                profilePicture: loggedUser.user.profilePicture,
                 accessToken: loggedUser.accessToken,
                 refreshToken: loggedUser.refreshToken,
+
+                // Render by Default the sub-component 'About'
                 render: 'About',
-                guest: false,
+
+                //Edit-Mode
+                editProfilePicMode: false,
+
+                //Image Upload Settings
+                uploadUrl: 'http://localhost:8010/upload',
+                imageUploaded: '',
                 uploadedFile: null,
-                uploadedFileUrl: '',
-                uploadPreset: loggedUser.user._id,
-                uploadUrl: 'http://localhost:8010/upload'
+                uploadPreset: {
+                    userId: loggedUser.user._id,
+                    userName: loggedUser.user.userName
+                }
+
             };
         };
+
+        // Binding functions
+        this.changeEditMode = this.changeEditMode.bind(this);
+        this.takeUserProfilePic = this.takeUserProfilePic.bind(this);
     };
 
+
+
+
+
     ///////////////////////////////////////////////////////////////////////////////////////////
+    //? ************************ # FUNCTIONS
 
 
-    // * Functions
+
+
+
+    //? ******************** # SUB-COMPONENTS # **************************************
     // Take and set the name of the Sub-Component to render
     handleClick(component) {
         // console.log(component);
@@ -357,142 +387,194 @@ export default class ProfileEditInfo extends Component {
             default: return <About />
         };
     };
+    //? ****************************************************************************
 
-    // Request to the server
-    requestHandler = (event, field, input) => {
-        event.preventDefault();
 
-        const newData = {
-            [field]: input,
-        };
 
-        const config = {
-            headers: {
-                'content-type': 'multipart/form-data'
-            }
-        };
 
-        axios.post(`http://localhost:8010/profile/:id/${field}`, newData, config)
-            .then((result) => {
 
-                console.log(result);
-
-                console.log(`${result.request.status} ${result.request.statusText}`);
-
-                switch (result.request.status) {
-                    case 204:
-                        this.setState({ message: 'User doesn\'t exist' });
-                        break;
-
-                    case 200:
-                        this.setState(result.data.user);
-                        if (this.state.message) {
-                            delete this.state['message'];
-                        }
-                        this.props.history.push("/");
-                        break;
-
-                    default:
-                        break;
-                };
-            })
-            .catch((err) => {
-                // err (message, config, code, request, response)
-                console.log(err.response.data)
-
-                switch (err.response.status) {
-
-                    case 400:
-                        this.setState({ message: err.response.data });
-                        break;
-
-                    case 409:
-                        this.setState({ message: err.response.data });
-                        break;
-
-                    default:
-                        break;
-                };
-            });
-    };
-
-    // Image Upload on the state
+    //? ******************** # IMAGE UPLOAD # **************************************
+    // Upload and set the image in the state
     onImageDrop(files) {
         this.setState({
             uploadedFile: files[0]
         });
 
-        this.handleImageUpload(files[0]);
+        this.handleImageUpload(this.state.uploadedFile);
     };
 
     // Handeling the image update
     handleImageUpload(file) {
         let upload = request.post(this.state.uploadUrl)
-            .field('userId', this.state.uploadPreset)
-            .field('file', file);
+            .field(this.state.uploadPreset)
+            .field('editProfilePicture', file);
 
         upload.end((err, res) => {
             if (err) {
                 console.error(err);
             };
 
-            if (res.body.secure_url !== '') {
+            if (res.body.imageUploaded !== '') {
+                this.takeUserProfilePic();
                 this.setState({
-                    uploadedFileUrl: res.body.secure_url
+                    imageUploaded: res.body.imageUploaded
                 });
             };
         });
     };
+    //? ****************************************************************************
+
+
+
+
+
+    //? ******************** # IMAGE DOWNLOAD # **************************************
+    // Download the Profile Picture
+    takeUserProfilePic() {
+        let userName;
+
+        if (this.state.user.userName) {
+            userName = this.state.user.userName;
+        } else {
+            userName = this.match.props.params.userName;
+        }
+        return axios.get(`http://localhost:8010/${userName}/profilePicture`)
+            .then((res) => this.setState({ profilePicture: res.data }))
+            .catch(err => console.log(err))
+    };
+
+    // Load the profile picture when the component is loaded
+    componentDidMount() {
+        this.takeUserProfilePic();
+    };
+    //? ****************************************************************************
+
+
+
+
+
+    //? ******************** Editing-Mode **************************************
+    // Enable/Disable Editing profile Picture
+    changeEditMode = () => {
+        if (this.state.editProfilePicMode === false) {
+            this.setState({
+                editProfilePicMode: true
+            });
+        } else if (this.state.editProfilePicMode === true) {
+            this.setState({
+                editProfilePicMode: false
+            });
+        };
+    };
+
+    // Edit View Profile Picture
+    renderEditView = () => {
+
+        let renderElement = (
+            <>
+                <Dropzone
+                    onDrop={this.onImageDrop.bind(this)}
+                    accept='image/*'
+                    multiple={false}>
+                    {({ getRootProps, getInputProps }) => {
+                        return (
+                            <div
+                                {...getRootProps()}
+                            >
+                                <input {...getInputProps()} />
+                                {
+                                    <p>Try dropping some files here, or click to select files to upload.</p>
+                                }
+                            </div>
+                        )
+                    }}
+                </Dropzone>
+
+                {
+                    this.state.imageUploaded === '' ? null :
+                        <div>
+                            <p>{this.state.uploadedFile.name}</p>
+                            <img src={this.state.imageUploaded} alt='coddio' />
+                        </div>
+                }
+            </>
+        )
+
+        return (
+            <>
+
+                <div>
+                    <Image src={`${this.state.profilePicture}`} thumbnail />
+
+                    <Button className='position-absolute top-right btn btn-warning' onClick={() => this.changeEditMode()}><FontAwesomeIcon icon={faPen} style={{ color: 'red' }} /></Button>
+
+                </div>
+
+                {renderElement}
+
+            </>
+        );
+    };
+
+    // Default View Profile Picture
+    renderDefaultView = () => {
+
+        let renderElement = (
+            <div>
+                <Image src={`${this.state.profilePicture}`} thumbnail />
+                <Button
+                    className='position-absolute top-right btn btn-warning'
+                    onClick={() => this.changeEditMode()}>
+                    <FontAwesomeIcon icon={faPen} style={{ color: 'red' }} />
+                </Button>
+            </div>
+        );
+
+        return (
+            <>
+                {renderElement}
+            </>
+        );
+    };
+    //? ****************************************************************************
+
+
+
 
 
     ///////////////////////////////////////////////////////////////////////////////////////////
 
 
+
+
+
     // Render
     render() {
 
-        if (this.state.guest) {
+        if (!this.state.isLogged) {
             return <Redirect to={{
-                pathname: "/unauthorized",
+                pathname: '/unauthorized',
                 state: { message: 'Unauthorized' }
             }} />
-        } else {
+        }
+
+        else {
             return (
                 <>
                     {/* Title, Profile Picture, Edit Button */}
                     <Jumbotron fluid>
                         <Container >
                             <Row>
+
                                 <Col md={4}>
-                                    <Image src='/images/profilePicture/test.jpg' thumbnail />
-
-                                    <Dropzone
-                                        onDrop={this.onImageDrop.bind(this)}
-                                        accept="image/*"
-                                        multiple={false}>
-                                        {({ getRootProps, getInputProps }) => {
-                                            return (
-                                                <div
-                                                    {...getRootProps()}
-                                                >
-                                                    <input {...getInputProps()} />
-                                                    {
-                                                        <p>Try dropping some files here, or click to select files to upload.</p>
-                                                    }
-                                                </div>
-                                            )
-                                        }}
-                                    </Dropzone>
-
-                                    <div>
-                                        {this.state.uploadedFileUrl === '' ? null :
-                                            <div>
-                                                <p>{this.state.uploadedFile.name}</p>
-                                                <img src={this.state.uploadedFileUrl} alt='coddio' />
-                                            </div>}
-                                    </div>
-
+                                    {this.state.editProfilePicMode === true ?
+                                        this.renderDefaultView()
+                                        :
+                                        this.renderEditView()
+                                    }
                                 </Col>
+
+
                                 <Col md={4}>
                                     <h1>{this.props.match.params.userName}</h1>
                                 </Col>
@@ -523,7 +605,7 @@ export default class ProfileEditInfo extends Component {
                                     <Nav.Link eventKey="link-2" onClick={this.handleClick.bind(this, 'Favorite')}>Favorite</Nav.Link>
                                 </Nav.Item>
                                 {
-                                    !this.state.guest ?
+                                    this.state.isLogged ?
                                         <Nav.Item>
                                             <Nav.Link eventKey="disabled" onClick={this.handleClick.bind(this, 'PersonalArea')}>Personal Area</Nav.Link>
                                         </Nav.Item> : null

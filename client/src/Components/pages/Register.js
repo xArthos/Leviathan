@@ -71,6 +71,7 @@ export default class LogUser extends Component {
     // Request to the server
     requestHandler = (event) => {
         event.preventDefault();
+
         console.log(this.state);
         // console.log(event.target.email.value);
         const newUser = {
@@ -82,15 +83,18 @@ export default class LogUser extends Component {
             password: this.state.password,
             passwordConfirmation: this.state.passwordConfirmation
         };
+
         const formData = new FormData();
         formData.append('profilePicture', this.state.profilePicture);
         formData.append('body', JSON.stringify(newUser));
         console.log(formData.entries());
+
         const config = {
             headers: {
                 'content-type': 'multipart/form-data'
             }
         };
+
         axios.post('http://localhost:8010/register', formData, config)
             .then((result) => {
 

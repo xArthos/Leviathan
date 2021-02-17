@@ -20,6 +20,7 @@ import Succesufully from './Components/pages/Succesufully';
 import Profile from './Components/pages/Profile';
 import ErrorPage from './Components/pages/Error';
 import ProfileEditInfo from './Components/pages/ProfileEditInfo';
+import NewWikiPage from './Components/pages/NewWikiPage';
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -50,6 +51,7 @@ const App = () => {
           <Route path='/unauthorized' component={ErrorPage} />
           <Route path='/profile::userName' exact component={Profile} />
           <Route path='/profile::userName/edit' exact component={ProfileEditInfo} />
+          <Route path='/profile::userName/newWikiPage' exact component={NewWikiPage} />
 
           {/* 404 Page */}
           <Route path='*' component={() => <ErrorPage message={'404 Not Found'} />} />

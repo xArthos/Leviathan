@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 import { Jumbotron, Container, ListGroup, Row, Col, Image, Button, Card, Nav } from 'react-bootstrap';
 import { useParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
+import axios from 'axios';
 
 // Fontawesome
 import { library } from '@fortawesome/fontawesome-svg-core';
@@ -106,30 +107,40 @@ export default class Profile extends Component {
         super(props);
 
         // Data of the logged User
-        const data = JSON.parse(localStorage.getItem('Leviathan'));
+        const loggedUser = JSON.parse(localStorage.getItem('Leviathan'));
 
-        // Check if there is the User logged
-        if (data === null) {
-            // State
+        //* State
+        // Set the State if there's not a User logged
+        if (loggedUser === null) {
             this.state = {
+                // Logged User
+                isLogged: false,
+
+                // User's Infos
                 user: '',
+                profilePicture: '',
                 accessToken: '',
                 refreshToken: '',
-                render: 'About',
-                guest: true
+
+                // Render by Default the sub-component 'About'
+                render: 'About'
             };
         } else {
-            // State
             this.state = {
-                user: data.user,
-                accessToken: data.accessToken,
-                refreshToken: data.refreshToken,
-                render: 'About',
-                guest: false
-            };
-        }
 
-        // console.log(this.props.match.params);
+                // Logged User
+                isLogged: true,
+
+                // User's Infos
+                user: loggedUser.user,
+                profilePicture: loggedUser.user.profilePicture,
+                accessToken: loggedUser.accessToken,
+                refreshToken: loggedUser.refreshToken,
+
+                // Render by Default the sub-component 'About'
+                render: 'About'
+            };
+        };
     };
 
 
@@ -146,7 +157,7 @@ export default class Profile extends Component {
 
     // Render the Component selected
     _renderSubComp() {
-        if (!this.state.guest) {
+        if (this.state.isLogged) {
             switch (this.state.render) {
                 case 'About': return <About />
                 case 'Messages': return <Messages />
@@ -164,6 +175,15 @@ export default class Profile extends Component {
         };
     };
 
+    //? ******************** # IMAGE DOWNLOAD # **************************************
+    // Download the Profile Picture
+    componentDidMount() {
+        axios.get(`http://localhost:8010/${this.props.match.params.userName}/profilePicture`)
+            .then((res) => this.setState({ profilePicture: res.data }))
+            .catch(err => console.log(err))
+    };
+    //? ****************************************************************************
+
 
     ///////////////////////////////////////////////////////////////////////////////////////////
 
@@ -177,13 +197,13 @@ export default class Profile extends Component {
                     <Container >
                         <Row>
                             <Col md={4}>
-                                <Image src='/images/profilePicture/test.jpg' thumbnail />
+                                <Image src={`${this.state.profilePicture}`} thumbnail />
                             </Col>
                             <Col md={4}>
                                 <h1>{this.props.match.params.userName}</h1>
                             </Col>
                             {
-                                !this.state.guest ?
+                                this.state.isLogged ?
                                     <Col md={4}>
                                         <Button onClick={() => this.props.history.push(`/profile:${this.state.user.userName}/edit`)}>Edit Change</Button>
                                     </Col> : null
@@ -212,7 +232,7 @@ export default class Profile extends Component {
                                 <Nav.Link eventKey="link-2" onClick={this.handleClick.bind(this, 'Favorite')}>Favorite</Nav.Link>
                             </Nav.Item>
                             {
-                                !this.state.guest ?
+                                this.state.isLogged ?
                                     <Nav.Item>
                                         <Nav.Link eventKey="disabled" onClick={this.handleClick.bind(this, 'PersonalArea')}>Personal Area</Nav.Link>
                                     </Nav.Item> : null
@@ -239,17 +259,25 @@ export default class Profile extends Component {
 
                 <Row>
                     <Col md='4'>
-                        <Card style={{ backgroundImage: "url('images/profilePicture/test.jpg')" }}>
-                            <Card.Body className='text-white text-center d-flex-column align-items-center rgba-black-strong py-5 px-4'>
+                        {
+                            this.state.isLogged ?
 
-                                <FontAwesomeIcon size='6x' icon={faPlus} />
-                                <br />
-                                <Button variant='warning'>
-                                    Create a New Wiki Page
-                                </Button>
+                                <Card style={{ backgroundImage: "url('images/test.jpg')" }}>
+                                    <Card.Body className='text-white text-center d-flex-column align-items-center rgba-black-strong py-5 px-4'>
 
-                            </Card.Body>
-                        </Card>
+                                        <FontAwesomeIcon size='6x' icon={faPlus} />
+                                        <br />
+                                        <Button variant='warning' onClick={() => this.props.history.push(`/profile:${this.state.user.userName}/newWikiPage`)}>
+                                            Create a New Wiki Page
+                                        </Button>
+
+                                    </Card.Body>
+                                </Card>
+
+                                :
+
+                                null
+                        }
                     </Col>
                 </Row>
             </>

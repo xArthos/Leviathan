@@ -11,6 +11,8 @@ import reducers from './reducers';
 // CSS
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './css/main.css';
+import 'react-quill/dist/quill.snow.css';
+import 'react-quill/dist/quill.bubble.css';
 
 // App.js
 import App from './App';
