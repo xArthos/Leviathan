@@ -17,6 +17,7 @@ import { faAt } from '@fortawesome/free-solid-svg-icons';
 import { faAddressCard } from '@fortawesome/free-solid-svg-icons';
 import { faShieldAlt } from '@fortawesome/free-solid-svg-icons';
 
+// Fontawesome Library
 library.add(faStroopwafel);
 
 
@@ -26,12 +27,15 @@ library.add(faStroopwafel);
 
 // Main Component
 const Users = () => {
+
+    // Take the users from the Redux-Instance
     const user = useSelector((state) => state.users);
+    // console.log(user);
 
-    console.log(user);
-
+    // Number of Registered User
     const count = user.filter(user => user).length;
 
+    // Component Return
     return (
         <Container>
             <h1>Users: {count}</h1>
@@ -67,7 +71,7 @@ const Users = () => {
                 </tbody>
             </Table>
         </Container>
-    )
-}
+    );
+};
 
 export default Users;

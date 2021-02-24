@@ -49,11 +49,15 @@ const userSchema = mongoose.Schema({
         path: String,
         size: Number
     },
+    wikiPagesMade: [{
+        type: mongoose.Schema.ObjectId,
+        ref: 'WikiPage'
+    }],
     active: {
         type: Boolean,
         default: false
     }
-}, {timestamps: true});
+}, { timestamps: true });
 
 // Virtual
 userSchema.virtual('fullName').get(() => {

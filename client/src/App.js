@@ -2,7 +2,6 @@
 import React, { useEffect } from 'react';
 import { BrowserRouter as Router, Route, Switch, useHistory } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
-import { Container } from 'react-bootstrap';
 
 // Actions
 import { getUsers } from './actions/users';
@@ -21,6 +20,8 @@ import Profile from './Components/pages/Profile';
 import ErrorPage from './Components/pages/Error';
 import ProfileEditInfo from './Components/pages/ProfileEditInfo';
 import NewWikiPage from './Components/pages/NewWikiPage';
+import WikiPage from './Components/pages/WikiPage';
+import Wikis from './Components/pages/Wikis';
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -41,22 +42,25 @@ const App = () => {
       <MainNavBar />
 
       {/* Main */}
-      <Container id='mainContainer'>
+      <div id='mainContainer'>
         <Switch>
           <Route path='/' exact component={Main} />
           <Route path='/login' component={LogUser} />
-          <Route path='/usersList' component={Users} />
+          <Route path='/allUsersList' component={Users} />
+          <Route path='/wikis' component={Wikis} />
           <Route path='/register' component={Register} />
           <Route path='/success' component={Succesufully} />
           <Route path='/unauthorized' component={ErrorPage} />
           <Route path='/profile::userName' exact component={Profile} />
           <Route path='/profile::userName/edit' exact component={ProfileEditInfo} />
-          <Route path='/profile::userName/newWikiPage' exact component={NewWikiPage} />
+          <Route path='/profile::userName/newWikiPage/:newWikiPageId' exact component={NewWikiPage} />
+          <Route path='/wiki/:WikiPageId' exact component={WikiPage} />
+
 
           {/* 404 Page */}
           <Route path='*' component={() => <ErrorPage message={'404 Not Found'} />} />
         </Switch>
-      </Container>
+      </div>
 
       {/* Footer */}
       <Footer />

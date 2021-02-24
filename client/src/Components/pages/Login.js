@@ -3,10 +3,20 @@ import { Component } from 'react';
 import axios from 'axios';
 import { Form, Button, Alert } from 'react-bootstrap';
 
+
+
+///////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+// Main Component
 export default class Login extends Component {
 
     constructor(props) {
         super(props);
+
+        // * State
         this.state = {
             isLogged: false
         };
@@ -14,6 +24,8 @@ export default class Login extends Component {
         this.loginRequest = this.loginRequest.bind(this);
     };
 
+
+    //? ******************** # REQUEST HANDLER # **************************************
     loginRequest = (event) => {
         event.preventDefault();
         // console.log(event.target.email.value);
@@ -43,11 +55,12 @@ export default class Login extends Component {
 
                         localStorage.setItem('Leviathan', JSON.stringify(result.data));
 
-                        this.props.history.push({ 
-                            pathname: '/success', 
+                        this.props.history.push({
+                            pathname: '/success',
                             state: {
                                 message: 'Loged In succesufully'
-                            }});
+                            }
+                        });
                         break;
 
                     default:
@@ -76,7 +89,10 @@ export default class Login extends Component {
                 };
             });
     };
+    //? **************************************************************************
 
+
+    // Render
     render() {
         return (
             <>

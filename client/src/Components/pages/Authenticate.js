@@ -10,6 +10,7 @@ import { Jumbotron, Container } from 'react-bootstrap';
 // Main Component
 export default class Main extends Component {
 
+    // Render
     render() {
         return (
             <Jumbotron fluid>

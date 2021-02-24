@@ -12,6 +12,8 @@ export default class Succesufully extends Component {
 
     constructor(props) {
         super(props);
+
+        // * State
         this.state = {
             message: this.props.location.state.message
         };
@@ -22,6 +24,7 @@ export default class Succesufully extends Component {
         }, 1800);
     };
 
+    // Render
     render() {
         return (
             <Jumbotron fluid>

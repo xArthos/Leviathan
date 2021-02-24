@@ -2,7 +2,7 @@
 import axios from 'axios';
 
 // Set URL
-const usersUrl = 'http://localhost:8010/usersList';
+const usersUrl = 'http://localhost:8010/allUsersList';
 
 // APIs
 // All Users

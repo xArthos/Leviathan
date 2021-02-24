@@ -12,13 +12,14 @@ export default class ErrorPage extends Component {
 
     constructor(props) {
         super(props);
+
+        // * State
         this.state = {
             message: this.props.message || this.props.location.state.message || 'Nothing to report'
         };
-
-
     };
 
+    // Render
     render() {
         return (
             <Jumbotron fluid>

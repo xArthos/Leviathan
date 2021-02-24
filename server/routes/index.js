@@ -5,26 +5,40 @@ import multer from 'multer';
 import path from 'path';
 
 // Controllers
-import { usersList, userProfilePic } from '../controllers/get.js'
+import { 
+    allUsersList,
+    allWikisList,
+    authenticate,
+    userProfilePic,
+    userProfilePicTemp,
+    wikiPagePicture,
+    wikiPagePublished,
+    userWikiPages
+} from '../controllers/get.js'
+
 import {
     validateUserInformations,
     signUp,
     login,
     checkExitEmail,
     checkExitUsername,
-    imgUpload
+    newProfilePicUpload,
+    newWikiImageEditorUpload,
+    setProfilePic,
+    publishWiki,
+    deleteFile,
+    createNewWiki,
+    deleteWiki
 } from '../controllers/post.js'
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
 
 // Setting the router
 const router = express.Router();
 
 // Setting the favicon
 const favicon = fs.readFileSync(`${process.cwd()}/public/images/ico/favicon.ico`);
-
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -39,11 +53,11 @@ const storageProfilePic = multer.diskStorage({
         const user = JSON.parse(JSON.stringify(req.body));
 
         // Destination of the file
-        const dir = `${process.cwd()}/public/images/profilePicture/${user.userName}/`;
+        const dir = `${process.cwd()}/public/images/profilePicture/${user.userName}/temp`;
 
         // Create a new folder if it doesn't exit
         if (!fs.existsSync(dir)) {
-            fs.mkdirSync(dir);
+            fs.mkdirSync(dir, { recursive: true });
         };
 
         // Callback
@@ -56,33 +70,29 @@ const storageProfilePic = multer.diskStorage({
     }
 
 });
-
 const uploadProfilePic = multer({
     storage: storageProfilePic
 });
 
-
 // New Wiki Page Storage
 const storageNewWikiPagePics = multer.diskStorage({
     destination: (req, file, cb) => {
-        console.log(req)
 
-        // Preset Infos
-        const preset = JSON.parse(JSON.stringify(req.body));
+        const { userId, wikiId } = req.params;
 
         // Destination of the file
-        const dir = `${process.cwd()}/images/wikis/${preset.userName}/`;
+        const dir = `${process.cwd()}/public/images/wikis/${userId}/${wikiId}/`;
 
         // Create a new folder if it doesn't exit
         if (!fs.existsSync(dir)) {
-            fs.mkdirSync(dir);
+            fs.mkdirSync(dir, { recursive: true });
         };
 
         // Callback
         cb(null, dir);
     },
     filename: (req, file, cb) => {
-        cb(null, `image${path.extname(file.originalname)}`);
+        cb(null, `${Date.now()}${path.extname(file.originalname)}`);
     }
 });
 const uploadNewWikiPagePics = multer({
@@ -94,16 +104,25 @@ const uploadNewWikiPagePics = multer({
 
 
 // GET
-router.get('/usersList', usersList);
+router.get('/allUsersList', allUsersList);
+router.get('/allWikisList', allWikisList);
+router.get('/user/auth/:token', authenticate);
 router.get('/:userName/profilePicture', userProfilePic);
+router.get('/:userName/profilePicture/temp', userProfilePicTemp);
+router.get('/:userName/wikis', userWikiPages);
+router.get('/:wikiId/img/:picExtension/:fileName', wikiPagePicture);
+router.get('/wiki/:wikiId', wikiPagePublished);
 
 // POST
 router.post('/login', login);
 router.post('/register', uploadProfilePic.single('profilePicture'), validateUserInformations, checkExitEmail, checkExitUsername, signUp);
-router.post('/upload', uploadProfilePic.single('editProfilePicture'), imgUpload);
-router.post('/wiki', uploadNewWikiPagePics.array('upload'), (req, res) => {
-    console.log(req.body)
-});
+router.post('/profile::userName/edit/newProfilePicUpload', uploadProfilePic.single('editProfilePicture'), newProfilePicUpload);
+router.post('/newWiki/picturesUpload/:userId/:wikiId', uploadNewWikiPagePics.single('upload'), newWikiImageEditorUpload);
+router.post('/confirm', setProfilePic);
+router.post('/newWiki/publish/:userId/:wikiId', publishWiki);
+router.post('/deletePhoto/:wikiId/:fileName/:fileExt', deleteFile);
+router.post('/wiki/create/:userId', createNewWiki);
+router.post('/wiki/delete/:wikiId', deleteWiki);
 
 
 // Export

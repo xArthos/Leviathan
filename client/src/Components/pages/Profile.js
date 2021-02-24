@@ -1,30 +1,38 @@
 // Modules
 import React, { Component } from 'react';
-import { Jumbotron, Container, ListGroup, Row, Col, Image, Button, Card, Nav } from 'react-bootstrap';
+import { Jumbotron, Container, ListGroup, Row, Col, Image, Button, Card, Nav, Alert, CardDeck } from 'react-bootstrap';
 import { useParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import axios from 'axios';
+import Moment from 'react-moment';
 
 // Fontawesome
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faStroopwafel } from '@fortawesome/free-solid-svg-icons';
 // Icons
-import { faPlus } from '@fortawesome/free-solid-svg-icons';
+import { faPlus, faTrashAlt, faPen } from '@fortawesome/free-solid-svg-icons';
 
+// Fontawesome Library
 library.add(faStroopwafel);
 
 
-///////////////////////////////////////////////////////////////////////////////////////////
-///////////////////////////////////////////////////////////////////////////////////////////
 
+
+
+///////////////////////////////////////////////////////////////////////////////////////////
+//? ************************ # SUB-COMPONENTS
+// ! TO FINISH
 
 // Sub Components
 const About = () => {
+
+    // Component Return
     return (
         <Jumbotron fluid>
             <Container >
                 <h2>About</h2>
+                <hr />
             </Container>
         </Jumbotron>
     );
@@ -32,22 +40,25 @@ const About = () => {
 
 const Messages = () => {
 
+    // Component Return
     return (
         <Jumbotron fluid>
             <Container >
-                <Row>
-
-                </Row>
+                <h2>Test</h2>
+                <hr />
             </Container>
         </Jumbotron>
     );
 };
 
 const Favorite = () => {
+
+    // Component Return
     return (
         <Jumbotron fluid>
             <Container >
                 <h2>Test</h2>
+                <hr />
             </Container>
         </Jumbotron>
     );
@@ -55,7 +66,7 @@ const Favorite = () => {
 
 const PersonalArea = () => {
 
-    // Taking the user from DB - Redux
+    // Taking the user from Redux-Instance
     const { userName } = useParams();
     const data = useSelector((state) => state.users);
     // console.log(userName);
@@ -63,16 +74,19 @@ const PersonalArea = () => {
     // console.log(thisUser[0].email);
     const thisUser = user[0];
 
+
     // Setting the Date from DB's Informations 
     const date = new Date(thisUser.createdAt);
     const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
     const days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 
-    // Return the Component
+
+    // Component Return
     return (
         <Jumbotron fluid>
             <Container >
                 <h2>Infos</h2>
+                <hr />
                 <Row>
                     <Col xs={6} md={6}>
                         <ListGroup>
@@ -94,9 +108,11 @@ const PersonalArea = () => {
     );
 };
 
+///////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////
 
-///////////////////////////////////////////////////////////////////////////////////////////
-///////////////////////////////////////////////////////////////////////////////////////////
+
+
 
 
 // Main Component
@@ -118,9 +134,15 @@ export default class Profile extends Component {
 
                 // User's Infos
                 user: '',
+                userId: '',
+                userName: this.props.match.params.userName,
                 profilePicture: '',
                 accessToken: '',
                 refreshToken: '',
+                userWikis: 0,
+                wikiDatas: [],
+                message: '',
+                alertVariant: '',
 
                 // Render by Default the sub-component 'About'
                 render: 'About'
@@ -133,22 +155,34 @@ export default class Profile extends Component {
 
                 // User's Infos
                 user: loggedUser.user,
+                userId: loggedUser.user._id,
+                userName: loggedUser.user.userName,
                 profilePicture: loggedUser.user.profilePicture,
                 accessToken: loggedUser.accessToken,
                 refreshToken: loggedUser.refreshToken,
+                userWikis: 0,
+                wikiDatas: [],
+                message: '',
+                alertVariant: '',
 
                 // Render by Default the sub-component 'About'
                 render: 'About'
             };
         };
+
+        // Binding Functions
+        this.createNewWiki = this.createNewWiki.bind(this);
+        this.deleteWiki = this.deleteWiki.bind(this);
     };
 
 
+
+
     ///////////////////////////////////////////////////////////////////////////////////////////
+    //? ************************ FUNCTIONS
 
 
-    // * Functions
-
+    //? ******************** Sub-Component Handlers **************************************
     // Take and set the name of the Sub-Component to render
     handleClick(component) {
         // console.log(component);
@@ -174,18 +208,62 @@ export default class Profile extends Component {
             };
         };
     };
+    //? **********************************************************************************
 
-    //? ******************** # IMAGE DOWNLOAD # **************************************
-    // Download the Profile Picture
-    componentDidMount() {
-        axios.get(`http://localhost:8010/${this.props.match.params.userName}/profilePicture`)
-            .then((res) => this.setState({ profilePicture: res.data }))
-            .catch(err => console.log(err))
+
+    //? **********************  Wiki Handlers ********************************************
+    createNewWiki() {
+        axios.post(`http://localhost:8010/wiki/create/${this.state.userId}`)
+            .then(res => res.data.newWikiId)
+            .then(id => this.props.history.push(`/profile:${this.state.userName}/newWikiPage/${id}`))
+            .catch(err => console.log(err));
     };
-    //? ****************************************************************************
+
+    deleteWiki(wikiId) {
+        axios.post(`http://localhost:8010/wiki/delete/${wikiId}`)
+            .then((res) => {
+
+                console.log(res);
+
+                console.log(`${res.request.status} ${res.request.statusText}`);
+
+                switch (res.request.status) {
+                    case 200:
+                        this.setState(res.data);
+                        setTimeout(() => {
+                            window.location.reload(true);
+                        }, 2500);
+                        break;
+
+                    default:
+                        break;
+                };
+            })
+            .catch(err => console.log(err));
+    };
+    //? **********************************************************************************
+
+
+    //? ******************** Load User's Wikis *******************************************
+    componentDidMount() {
+        axios.get(`http://localhost:8010/${this.state.userName}/wikis`)
+            .then(res => {
+                // console.log(res.data);
+                this.setState({
+                    userWikis: res.data.numberOfWikis,
+                    wikiDatas: res.data.wikis
+                })
+                // console.log(this.state);
+            })
+            .catch(err => console.log(err));
+    };
+    //? **********************************************************************************
 
 
     ///////////////////////////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////////////////////
+
+
 
 
     // Render
@@ -194,24 +272,25 @@ export default class Profile extends Component {
             <>
                 {/* Title, Profile Picture, Edit Button */}
                 <Jumbotron fluid>
-                    <Container >
-                        <Row>
-                            <Col md={4}>
-                                <Image src={`${this.state.profilePicture}`} thumbnail />
-                            </Col>
-                            <Col md={4}>
-                                <h1>{this.props.match.params.userName}</h1>
-                            </Col>
-                            {
-                                this.state.isLogged ?
-                                    <Col md={4}>
-                                        <Button onClick={() => this.props.history.push(`/profile:${this.state.user.userName}/edit`)}>Edit Change</Button>
-                                    </Col> : null
-                            }
-                        </Row>
-                    </Container>
+                    <Row className='px-3'>
+                        <Col md={3} className='text-center'>
+                            <Image src={`http://localhost:8010/${this.props.match.params.userName}/profilePicture`} thumbnail />
+                        </Col>
+                        <Col md={7}>
+                            <h1>{this.props.match.params.userName}</h1>
+                        </Col>
+                        {
+                            this.state.isLogged ?
+                                <Col md={2}>
+                                    <Button variant='warning' onClick={() => this.props.history.push(`/profile:${this.state.user.userName}/edit`)}>
+                                        <FontAwesomeIcon icon={faPen} style={{ color: 'red' }} /> Edit Profile
+                                        </Button>
+                                </Col> : null
+                        }
+                    </Row>
                 </Jumbotron>
 
+                {/* NavLinks Sub-Components */}
                 <Row>
                     <Col>
                         <Nav justify variant="tabs">
@@ -241,45 +320,94 @@ export default class Profile extends Component {
                     </Col>
                 </Row>
 
+                {/* Subcomponent Section Rendering */}
                 <Row>
-                    <Col id='panel'>
+                    <Col md='12' id='panel'>
                         {this._renderSubComp()}
                     </Col>
                 </Row>
 
+                {/* Title Wikis */}
                 <Row>
                     <Col>
                         <Jumbotron fluid>
                             <Container>
-                                <h2>{this.props.match.params.userName}'s Wikis</h2>
+                                <h2>{this.props.match.params.userName}'s Wikis: {this.state.userWikis}</h2>
+                                {
+                                    this.state.message !== '' ?
+                                        <Alert variant={this.state.alertVariant}>
+                                            {this.state.message}
+                                        </Alert> : null
+                                }
                             </Container>
                         </Jumbotron>
                     </Col>
                 </Row>
 
-                <Row>
-                    <Col md='4'>
-                        {
-                            this.state.isLogged ?
-
-                                <Card style={{ backgroundImage: "url('images/test.jpg')" }}>
-                                    <Card.Body className='text-white text-center d-flex-column align-items-center rgba-black-strong py-5 px-4'>
-
-                                        <FontAwesomeIcon size='6x' icon={faPlus} />
-                                        <br />
-                                        <Button variant='warning' onClick={() => this.props.history.push(`/profile:${this.state.user.userName}/newWikiPage`)}>
-                                            Create a New Wiki Page
-                                        </Button>
-
-                                    </Card.Body>
+                {/* User's Wikis Area */}
+                <CardDeck>
+                    {
+                        this.state.isLogged ?
+                            <Col md='3' key='newWikiCard'>
+                                <Card className='bg-dark text-white'>
+                                    <Card.Img src='images/test.jpg' alt='Card image' />
+                                    <Card.ImgOverlay>
+                                        <Card.Body className='d-flex flex-column align-items-center justify-content-around h-100 rgba-black-strong py-5 px-4'>
+                                            <FontAwesomeIcon size='6x' icon={faPlus} />
+                                            <br />
+                                            <Button variant='warning' onClick={() => this.createNewWiki()}>
+                                                Create a New Wiki Page
+                                            </Button>
+                                        </Card.Body>
+                                    </Card.ImgOverlay>
                                 </Card>
+                            </Col>
+                            :
 
-                                :
+                            null
+                    }
+                    {
+                        this.state.wikiDatas.length !== 0 ?
+                            this.state.wikiDatas.map((wiki) => {
 
-                                null
-                        }
-                    </Col>
-                </Row>
+                                return (
+                                    <Col md='3' key={`${wiki._id}`}>
+                                        <Card className='bg-dark text-white'>
+                                            <Card.Img src='images/test.jpg' alt='Card image' />
+                                            <Card.ImgOverlay className='d-flex flex-column align-items-center justify-content-between'>
+                                                <Card.Title>{wiki.title}</Card.Title>
+                                                <Card.Text>
+                                                    <a href={`/wiki/${wiki._id}`}>Go to the Wiki</a>
+                                                    <br />
+                                                    Last update: <Moment fromNow>{wiki.updatedAt}</Moment>
+                                                </Card.Text>
+                                                {
+                                                    this.state.isLogged ?
+                                                        <FontAwesomeIcon
+                                                            title='Delete permantely this page'
+                                                            className='position-absolute align-self-end delete-icon'
+                                                            onClick={() => this.deleteWiki(`${wiki._id}`)}
+                                                            icon={faTrashAlt}
+                                                            style={{ color: 'red' }} /> : null
+                                                }
+                                            </Card.ImgOverlay>
+                                        </Card>
+                                    </Col>
+                                )
+                            })
+
+                            :
+
+                            <Col md='3' key={`noWiki`}>
+                                <Card className='bg-dark text-white'>
+                                    <Card.Img src='images/test.jpg' alt='Card image' />
+                                    <Card.ImgOverlay className='d-flex flex-column justify-content-center'>
+                                        <Card.Title style={{alignSelf: 'center'}}>No Wikis</Card.Title>
+                                    </Card.ImgOverlay>
+                                </Card>
+                            </Col>
+                    }
+                </CardDeck>
             </>
         );
     };

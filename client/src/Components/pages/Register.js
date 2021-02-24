@@ -32,7 +32,16 @@ export default class LogUser extends Component {
         this.eraseAlert = this.eraseAlert.bind(this);
     };
 
-    // Deal with the data sent by the user
+
+
+
+
+    ///////////////////////////////////////////////////////////////////////////////////////////
+    //? ************************ # FUNCTIONS
+
+
+    //? *************************** # Handlers # **************************************
+    // Handle the data sent by the user
     inputChange(event) {
 
         // Take the input field
@@ -50,7 +59,7 @@ export default class LogUser extends Component {
         });
     };
 
-    // Deal with the file uploaded by the user
+    // Handle the file uploaded by the user
     inputFileChange = (event) => {
 
         // Take the input field
@@ -138,7 +147,11 @@ export default class LogUser extends Component {
                 };
             });
     };
+    //? *******************************************************************************
 
+
+
+    //? ******************** # Buttons Scripts # **************************************
     // ! INCOMPLETE
     confirmReset = (event) => {
         // event.preventDefault()
@@ -152,6 +165,15 @@ export default class LogUser extends Component {
             message: null
         });
     };
+    //? *******************************************************************************
+
+
+    ///////////////////////////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+
 
     // Render
     render() {

@@ -4,9 +4,13 @@ import jwt from 'jsonwebtoken';
 import Joi from 'joi';
 import sgMail from '@sendgrid/mail';
 import fs from 'fs';
+import path from 'path';
 
 // Models
 import User from '../model/User.js';
+import WikiPage from '../model/WikiPage.js';
+import { title } from 'process';
+import { type } from 'os';
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -261,122 +265,176 @@ export const signUp = async (req, res) => {
     };
 };
 
-export const authenticate = async (req, res) => {
-
-    const token = req.params.token;
-    console.log(token);
-
-    if (token) {
-        jwt.verify(token, process.env.JWT_SECRET_KEY, (err, decoded) => {
-            if (err) return res.send(400).send('Something went wrong');
-
-            const { email } = decoded;
-
-            User.findOneAndUpdate({ email: email }, { active: true }, (err, data) => {
-                if (err) return res.send(400).send('Something went wrong');
-
-                console.log(data)
-            });
-
-            res.status(200).send('User activated');
-        })
-    } else {
-        return res.json({ error: 'Something went wrong :(' });
-    };
-};
-
-export const edit = async (req, res) => {
-
-    // Destructuring important datas
-    const { email, password, userName, firstName, lastName } = JSON.parse(req.body.body);
+export const newProfilePicUpload = async (req, res) => {
 
     try {
-
-        // * Update User's Info
-        User.findOneAndUpdate({ email: email }, { active: true }, (err, data) => {
-            if (err) return res.send(400).send('Something went wrong');
-
-            console.log(data)
-        });
-
-        let newUser;
-        if (!req.file) {
-            newUser = new User({
-                userName: userName,
-                name: {
-                    lastName: lastName,
-                    firstName: firstName
-                },
-                email: email,
-                password: hashedPassword,
-                profilePicture: null
-            });
-        } else {
-            newUser = new User({
-                userName: userName,
-                name: {
-                    lastName: lastName,
-                    firstName: firstName
-                },
-                email: email,
-                password: hashedPassword,
-                profilePicture: req.file
-            });
-        };
-
-        // * Create an Activation Email
-        const msg = {
-            to: `${email}`,
-            from: "giampaololocascio@gmail.com",
-            subject: "Your registration on Leviathan",
-            text: "just a sample text with no reason XD",
-            html: `
-                    <h2>Click this link for activate your account</h2>
-                    <a href='${process.env.URL_DOMAIN}:${process.env.PORT}/user/auth/${token}'>${process.env.URL_DOMAIN}:${process.env.PORT}/user/auth/${token}</a>
-                `
-        };
-
-        // * Send Activation Email to the New User
-        sgMail.send(msg)
-            .then(() => {
-                console.log('Message sent');
-                res.status(200).send('User Created');
-            })
-            .catch((error) => {
-                console.log(error)
-                console.log(error.response.body.errors[0].message)
-            });
-    } catch (err) {
-        res.status(400);
-    };
-};
-
-export const imgUpload = async (req, res) => {
-
-    try {
-        const { path, mimetype } = req.file;
-
-        const file = fs.readFileSync(path);
-        const base64 = Buffer.from(file).toString('base64');
-        const dataToSend = `data:${mimetype};base64,${base64}`;
-
-        const user = JSON.parse(JSON.stringify(req.body));
-        //todo SAVE THE IMAGE ON DB - TO BE DONE
-        User.findOneAndUpdate({ _id: user.userId }, { profilePicture: dataToSend }, { upsert: true }, (err, res) => {
-            if (err) { throw err; }
-            else { console.log("Updated"); }
-        })
+        const { userName } = req.params;
 
         // Send the image to the front-end
         res.status(200).send({
-            imageUploaded: dataToSend
+            imageUploadedUrl: `http://localhost:8010/${userName}/profilePicture/temp`
         });
     } catch (error) {
         res.status(400).send({
             message: 'Error in the file uploading process'
         });
-    }
+    };
+};
 
+export const setProfilePic = async (req, res) => {
+
+    try {
+        // User Informations
+        const user = JSON.parse(JSON.stringify(req.body));
+
+        // File Paths
+        const currentPath = path.join(process.cwd(), "public", 'images', 'profilePicture', user.userName, 'temp', "profile.jpg");
+        const destinationPath = path.join(process.cwd(), "public", 'images', 'profilePicture', user.userName, "profile.jpg");
+
+        // Switching file's path function
+        fs.rename(currentPath, destinationPath, function (err) {
+            if (err) {
+                throw err
+            } else {
+                console.log("Successfully moved the file!");
+            };
+        });
+
+        // Creating URL and saving in DB
+        const url = `http://localhost:8010/${user.userName}/profilePicture`;
+        User.findOneAndUpdate({ _id: user.userId }, { profilePicture: url }, { upsert: true }, (err, res) => {
+            if (err) { throw err; }
+            else { console.log("Profile Picture Updated"); }
+        });
+
+        // Positive Response
+        res.status(200).send({
+            message: 'Profile picture successfully uploaded'
+        });
+    } catch (error) {
+        // Negative Response
+        res.status(400).send({
+            message: error
+        });
+    }
+};
+
+export const createNewWiki = async (req, res) => {
+    const userId = req.params.userId;
+
+    const newWiki = new WikiPage({
+        author: userId,
+    });
+
+    await newWiki.save();
+
+    console.log(newWiki);
+
+    res.status(200).send({
+        newWikiId: newWiki._id
+    });
+};
+
+export const newWikiImageEditorUpload = async (req, res) => {
+
+    const { wikiId } = req.params;
+
+    const picExtension = path.extname(req.file.originalname).slice(1);
+    const file = req.file.filename.replace(/\.[^/.]+$/, "");
+
+    res.status(200).json({
+        uploaded: true,
+        url: `http://localhost:8010/${wikiId}/img/${picExtension}/${file}`
+    });
+
+};
+
+export const deleteFile = async (req, res) => {
+    try {
+        const { wikiId, fileName, fileExt } = req.params;
+
+        WikiPage.findById(wikiId).populate('author', '_id').exec().then((data) => {
+            const userId = data.author._id;
+
+            const filePath = `${process.cwd()}/public/images/wikis/${userId}/${wikiId}/${fileName}.${fileExt}`;
+
+            fs.unlinkSync(filePath);
+
+            res.status(200).send({
+                message: 'File already removed.',
+                alertVariant: 'success'
+            });;
+        });
+    } catch (error) {
+        res.status(500).send({
+            message: 'File already removed.',
+            alertVariant: 'danger'
+        });
+        // console.log('File already removed from DB');
+    }
+};
+
+export const publishWiki = async (req, res) => {
+    const { content, title, gameSerie, type, genre, relation } = req.body;
+    const { userId, wikiId } = req.params;
+
+    console.log(req.body)
+
+    WikiPage.findOneAndUpdate({ _id: wikiId }, { content: content, published: true, title: title, gameSerie: gameSerie, type: type, genre: genre, relation: relation }, { upsert: true }, (err, res) => {
+        if (err) {
+            throw err;
+        }
+        else {
+            console.log("Wiki Page Published");
+        };
+
+        User.findByIdAndUpdate((userId), { $push: { "wikiPagesMade": wikiId } }, { upsert: true }, (err, res) => {
+            if (err) {
+                throw err;
+            }
+            else {
+                console.log("Wiki Page Added to the User's Collection");
+            };
+        });
+    });
+
+    res.status(200).send({
+        message: 'Wiki Page Succesfully published'
+    });
+};
+
+export const deleteWiki = async (req, res) => {
+    const { wikiId } = req.params;
+
+    WikiPage.findByIdAndDelete(wikiId).populate('author', '_id').exec((err, data) => {
+        const { _id } = data.author;
+        // console.log(_id);
+
+        // Folder of the Wiki's images
+        const dir = `${process.cwd()}/public/images/wikis/${_id}/${wikiId}`;
+        // console.log(dir);
+
+        fs.rm(dir, { recursive: true, force: true }, (err) => {
+            if (err) {
+                throw err;
+            };
+
+            // console.log(`Wiki's folder deleted!`);
+        });
+
+        User.findByIdAndUpdate((_id), { $pull: { "wikiPagesMade": wikiId } }, (err, res) => {
+            if (err) {
+                throw err;
+            }
+            else {
+                console.log("Wiki Page removed from the User's Collection");
+            };
+        });
+    });
+    res.status(200).send({
+        alertVariant: 'success',
+        message: 'Wiki Page Succesfully deleted'
+    });
 };
 
 //### Functions - Middleware ###

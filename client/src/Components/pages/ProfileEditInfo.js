@@ -1,6 +1,6 @@
 // Modules
 import React, { Component, useState } from 'react';
-import { Jumbotron, Container, ListGroup, Row, Col, Image, Button, Nav, InputGroup, FormControl } from 'react-bootstrap';
+import { Jumbotron, Container, ListGroup, Row, Col, Image, Button, Nav, InputGroup, FormControl, Alert } from 'react-bootstrap';
 import { Redirect, useParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import axios from 'axios';
@@ -15,20 +15,25 @@ import { faStroopwafel } from '@fortawesome/free-solid-svg-icons';
 // Icons
 import { faPen } from '@fortawesome/free-solid-svg-icons';
 
+// Fontawesome Library
 library.add(faStroopwafel);
 
 
-///////////////////////////////////////////////////////////////////////////////////////////
-// ! TO FINISH
-///////////////////////////////////////////////////////////////////////////////////////////
 
+
+///////////////////////////////////////////////////////////////////////////////////////////
+//? ************************ # SUB-COMPONENTS
+// ! TO FINISH
 
 // Sub Components
 const About = () => {
+
+    // Component Return
     return (
         <Jumbotron fluid>
             <Container >
                 <h2>About</h2>
+                <hr />
             </Container>
         </Jumbotron>
     );
@@ -36,22 +41,25 @@ const About = () => {
 
 const Messages = () => {
 
+    // Component Return
     return (
         <Jumbotron fluid>
             <Container >
-                <Row>
-                    Porcoddio
-                </Row>
+                <h2>Test</h2>
+                <hr />
             </Container>
         </Jumbotron>
     );
 };
 
 const Favorite = () => {
+
+    // Component Return
     return (
         <Jumbotron fluid>
             <Container >
                 <h2>Test</h2>
+                <hr />
             </Container>
         </Jumbotron>
     );
@@ -59,11 +67,13 @@ const Favorite = () => {
 
 const PersonalArea = () => {
 
+    // * useState
     let [editUsername, setEditUsername] = useState(false);
     let [editFirstName, setEditFirstName] = useState(false);
     let [editLastName, setEditLastName] = useState(false);
     let [editEmail, setEditEmail] = useState(false);
     let [editPassword, setEditPassword] = useState(false);
+
 
     // Taking the user from DB - Redux
     const { userName } = useParams();
@@ -73,6 +83,7 @@ const PersonalArea = () => {
     // console.log(thisUser[0].email);
     const thisUser = user[0];
 
+
     // Setting the Date from DB's Informations 
     const date = new Date(thisUser.createdAt);
     const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
@@ -80,10 +91,10 @@ const PersonalArea = () => {
 
 
     ///////////////////////////////////////////////////////////////////////////////////////////
+    //? ************************ # FUNCTIONS
     // ! TO FINISH
-    ///////////////////////////////////////////////////////////////////////////////////////////
 
-
+    // Edit-Mode Handler
     const changeEditMode = (key, sKey) => {
         if (!sKey) {
             switch (key) {
@@ -110,6 +121,7 @@ const PersonalArea = () => {
         };
     };
 
+    // Edit Element Rendering
     const renderEditView = (fParam, sParam) => {
 
         let renderElement;
@@ -168,6 +180,7 @@ const PersonalArea = () => {
         );
     };
 
+    // Defuault Element Rendering
     const renderDefaultView = (fParam, sParam) => {
 
         let renderElement;
@@ -194,11 +207,12 @@ const PersonalArea = () => {
     ///////////////////////////////////////////////////////////////////////////////////////////
 
 
-    // Return the Component
+    // Component Return
     return (
         <Jumbotron fluid>
             <Container >
                 <h2>Infos</h2>
+                <hr />
                 <Row>
                     <Col xs={6} md={6}>
                         <ListGroup>
@@ -300,16 +314,14 @@ const PersonalArea = () => {
     );
 };
 
-
 ///////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////
 
 
+
+
+// Main Component
 export default class ProfileEditInfo extends Component {
-
-
-
-
 
     // Constructor
     constructor(props) {
@@ -332,7 +344,7 @@ export default class ProfileEditInfo extends Component {
 
                 // User's Infos
                 user: loggedUser.user,
-                profilePicture: loggedUser.user.profilePicture,
+                profilePicture: loggedUser.user.profilePicture.replace(/"/g, ''),
                 accessToken: loggedUser.accessToken,
                 refreshToken: loggedUser.refreshToken,
 
@@ -343,20 +355,24 @@ export default class ProfileEditInfo extends Component {
                 editProfilePicMode: false,
 
                 //Image Upload Settings
-                uploadUrl: 'http://localhost:8010/upload',
-                imageUploaded: '',
+                uploadUrl: `http://localhost:8010/profile:${loggedUser.user.userName}/edit/newProfilePicupload`,
+                confirmUrl: 'http://localhost:8010/confirm',
+                imageUploadedUrl: '',
+                imageHash: '',
                 uploadedFile: null,
                 uploadPreset: {
                     userId: loggedUser.user._id,
                     userName: loggedUser.user.userName
-                }
+                },
 
+                // Alert Message
+                profileUpdatedMsg: ''
             };
         };
 
         // Binding functions
         this.changeEditMode = this.changeEditMode.bind(this);
-        this.takeUserProfilePic = this.takeUserProfilePic.bind(this);
+        this.confirmUpdateImage = this.confirmUpdateImage.bind(this);
     };
 
 
@@ -368,9 +384,7 @@ export default class ProfileEditInfo extends Component {
 
 
 
-
-
-    //? ******************** # SUB-COMPONENTS # **************************************
+    //? ******************** # Sub-Component # **************************************
     // Take and set the name of the Sub-Component to render
     handleClick(component) {
         // console.log(component);
@@ -391,9 +405,7 @@ export default class ProfileEditInfo extends Component {
 
 
 
-
-
-    //? ******************** # IMAGE UPLOAD # **************************************
+    //? ******************** # Image Upload # **************************************
     // Upload and set the image in the state
     onImageDrop(files) {
         this.setState({
@@ -415,45 +427,34 @@ export default class ProfileEditInfo extends Component {
             };
 
             if (res.body.imageUploaded !== '') {
-                this.takeUserProfilePic();
                 this.setState({
-                    imageUploaded: res.body.imageUploaded
+                    imageUploadedUrl: res.body.imageUploadedUrl,
+                    imageHash: Date.now()
                 });
             };
         });
     };
-    //? ****************************************************************************
 
-
-
-
-
-    //? ******************** # IMAGE DOWNLOAD # **************************************
-    // Download the Profile Picture
-    takeUserProfilePic() {
-        let userName;
-
-        if (this.state.user.userName) {
-            userName = this.state.user.userName;
-        } else {
-            userName = this.match.props.params.userName;
-        }
-        return axios.get(`http://localhost:8010/${userName}/profilePicture`)
-            .then((res) => this.setState({ profilePicture: res.data }))
-            .catch(err => console.log(err))
-    };
-
-    // Load the profile picture when the component is loaded
-    componentDidMount() {
-        this.takeUserProfilePic();
+    // Confirm the update of the image
+    confirmUpdateImage() {
+        axios.post(this.state.confirmUrl, this.state.uploadPreset)
+            .then(res => {
+                this.changeEditMode();
+                this.setState({
+                    profileUpdatedMsg: res.data.message,
+                    imageUploadedUrl: ''
+                });
+                setTimeout(() => {
+                    window.location.reload(true);
+                }, 2500);
+            })
+            .catch((err) => console.log(err))
     };
     //? ****************************************************************************
 
 
 
-
-
-    //? ******************** Editing-Mode **************************************
+    //? ******************** # Editing-Mode # **************************************
     // Enable/Disable Editing profile Picture
     changeEditMode = () => {
         if (this.state.editProfilePicMode === false) {
@@ -470,48 +471,102 @@ export default class ProfileEditInfo extends Component {
     // Edit View Profile Picture
     renderEditView = () => {
 
-        let renderElement = (
+        // Drag and Drop Element
+        const editElement = (
             <>
-                <Dropzone
-                    onDrop={this.onImageDrop.bind(this)}
-                    accept='image/*'
-                    multiple={false}>
-                    {({ getRootProps, getInputProps }) => {
-                        return (
-                            <div
-                                {...getRootProps()}
-                            >
-                                <input {...getInputProps()} />
-                                {
-                                    <p>Try dropping some files here, or click to select files to upload.</p>
-                                }
-                            </div>
-                        )
-                    }}
-                </Dropzone>
+                <Col md='9' className='d-flex flex-column justify-content-between'>
+                    <Dropzone
+                        onDrop={this.onImageDrop.bind(this)}
+                        accept='image/*'
+                        multiple={false}>
+                        {({ getRootProps, getInputProps }) => {
+                            return (
+                                <div {...getRootProps()}>
+                                    <input {...getInputProps()} />
+                                    {
+                                        <div id='droppingArea'>Drop your image here, or click to select one to upload.</div>
+                                    }
+                                </div>
+                            )
+                        }}
+                    </Dropzone>
+
+                    <div>
+                        {
+                            this.state.imageUploadedUrl === '' ?
+                                <>
+                                    <Button disabled variant='warning' onClick={() => this.confirmUpdateImage()} >Update</Button>{' '}
+                                    <Button variant='danger' onClick={() => this.changeEditMode()}>Cancel</Button>
+                                </>
+                                :
+                                <>
+                                    <Button variant='warning' onClick={() => this.confirmUpdateImage()} >Update</Button>{' '}
+                                    <Button variant='danger' onClick={() => this.changeEditMode()}>Cancel</Button>
+                                </>
+                        }
+                    </div>
+
+                </Col>
 
                 {
-                    this.state.imageUploaded === '' ? null :
-                        <div>
-                            <p>{this.state.uploadedFile.name}</p>
-                            <img src={this.state.imageUploaded} alt='coddio' />
-                        </div>
+                    this.state.imageUploadedUrl === '' ?
+                        <Col md='3'>
+                            <div className='square-dotted-box' />
+                        </Col>
+                        :
+                        <Col md='3'>
+                            <Image src={`${this.state.imageUploadedUrl}?${this.state.imageHash}`} alt='Profile Image to Upload' thumbnail />
+                        </Col>
                 }
             </>
         )
 
+        // Profile picture element
+        const profilePicElement = (
+            <>
+                {
+                    this.state.editProfilePicMode === '' ?
+                        <Col md='4' className='mw-content'>
+                            <Image src={this.state.profilePicture} thumbnail />
+
+                            <Button
+                                variant='warning'
+                                className='position-absolute top-right'
+                                onClick={() => this.changeEditMode()}>
+                                <FontAwesomeIcon icon={faPen} style={{ color: 'red' }} />
+                            </Button>
+                        </Col>
+                        :
+                        <Col md='4' className='mw-content'>
+                            <Image src={this.state.profilePicture} thumbnail />
+                        </Col>
+                }
+            </>
+        );
+
+        // Return of the function
         return (
             <>
+                <Row>
+                    {profilePicElement}
 
-                <div>
-                    <Image src={`${this.state.profilePicture}`} thumbnail />
+                    {/* User's Name */}
+                    <Col md={4}>
+                        <h1>{this.props.match.params.userName}</h1>
+                    </Col>
 
-                    <Button className='position-absolute top-right btn btn-warning' onClick={() => this.changeEditMode()}><FontAwesomeIcon icon={faPen} style={{ color: 'red' }} /></Button>
+                    {/* Edit Button */}
+                    <Col md={4}>
+                        <Button>Edit Infos</Button>
+                    </Col>
+                </Row>
 
-                </div>
+                <h2 className='mt-3'>Upload New Profile Picture</h2>
+                <hr className='mb-2' />
 
-                {renderElement}
-
+                <Row>
+                    {editElement}
+                </Row>
             </>
         );
     };
@@ -519,15 +574,38 @@ export default class ProfileEditInfo extends Component {
     // Default View Profile Picture
     renderDefaultView = () => {
 
-        let renderElement = (
-            <div>
-                <Image src={`${this.state.profilePicture}`} thumbnail />
-                <Button
-                    className='position-absolute top-right btn btn-warning'
-                    onClick={() => this.changeEditMode()}>
-                    <FontAwesomeIcon icon={faPen} style={{ color: 'red' }} />
-                </Button>
-            </div>
+        const renderElement = (
+            <>
+                <Row>
+                    {/* Profile Picture and Edit function */}
+                    <Col md='4' className='mw-content'>
+                        <Image src={this.state.profilePicture} thumbnail />
+                        <Button
+                            variant='warning'
+                            className='position-absolute top-right'
+                            onClick={() => this.changeEditMode()}>
+                            <FontAwesomeIcon icon={faPen} style={{ color: 'red' }} />
+                        </Button>
+
+                        {this.state.profileUpdatedMsg ?
+                            <Alert variant='success'>
+                                {this.state.profileUpdatedMsg}
+                            </Alert> :
+                            null
+                        }
+                    </Col>
+
+                    {/* User's Name */}
+                    <Col md={4}>
+                        <h1>{this.props.match.params.userName}</h1>
+                    </Col>
+
+                    {/* Edit Button */}
+                    <Col md={4}>
+                        <Button>Edit Infos</Button>
+                    </Col>
+                </Row>
+            </>
         );
 
         return (
@@ -540,8 +618,7 @@ export default class ProfileEditInfo extends Component {
 
 
 
-
-
+    ///////////////////////////////////////////////////////////////////////////////////////////
     ///////////////////////////////////////////////////////////////////////////////////////////
 
 
@@ -558,69 +635,57 @@ export default class ProfileEditInfo extends Component {
             }} />
         }
 
-        else {
-            return (
-                <>
-                    {/* Title, Profile Picture, Edit Button */}
-                    <Jumbotron fluid>
-                        <Container >
-                            <Row>
+        return (
+            <>
+                {/* Title, Profile Picture, Edit Button */}
+                <Jumbotron fluid>
+                    <Container >
+                        {!this.state.editProfilePicMode ?
+                            this.renderDefaultView()
+                            :
+                            this.renderEditView()
+                        }
+                    </Container>
+                </Jumbotron>
 
-                                <Col md={4}>
-                                    {this.state.editProfilePicMode === true ?
-                                        this.renderDefaultView()
-                                        :
-                                        this.renderEditView()
-                                    }
-                                </Col>
+                {/* Sub-Component Nav Tab */}
+                <Row>
+                    <Col>
+                        <Nav justify variant="tabs">
+                            {
+                                this.state.render === 'About' ?
+                                    <Nav.Item>
+                                        <Nav.Link eventKey="about" onClick={this.handleClick.bind(this, 'About')} active>About</Nav.Link>
+                                    </Nav.Item>
+                                    :
+                                    <Nav.Item>
+                                        <Nav.Link eventKey="about" onClick={this.handleClick.bind(this, 'About')}>About</Nav.Link>
+                                    </Nav.Item>
+                            }
+                            <Nav.Item>
+                                <Nav.Link eventKey="messages" onClick={this.handleClick.bind(this, 'Messages')}>Messages</Nav.Link>
+                            </Nav.Item>
 
+                            <Nav.Item>
+                                <Nav.Link eventKey="favourite" onClick={this.handleClick.bind(this, 'Favorite')}>Favorite</Nav.Link>
+                            </Nav.Item>
+                            {
+                                this.state.isLogged ?
+                                    <Nav.Item>
+                                        <Nav.Link eventKey="private" onClick={this.handleClick.bind(this, 'PersonalArea')}>Personal Area</Nav.Link>
+                                    </Nav.Item> : null
+                            }
+                        </Nav>
+                    </Col>
+                </Row>
 
-                                <Col md={4}>
-                                    <h1>{this.props.match.params.userName}</h1>
-                                </Col>
-                                <Col md={4}>
-                                    <Button>Edit Infos</Button>
-                                </Col>
-                            </Row>
-                        </Container>
-                    </Jumbotron>
-
-                    <Row>
-                        <Col>
-                            <Nav justify variant="tabs">
-                                {
-                                    this.state.render === 'About' ?
-                                        <Nav.Item>
-                                            <Nav.Link eventKey="link-3" onClick={this.handleClick.bind(this, 'About')} active>About</Nav.Link>
-                                        </Nav.Item>
-                                        :
-                                        <Nav.Item>
-                                            <Nav.Link eventKey="link-3" onClick={this.handleClick.bind(this, 'About')}>About</Nav.Link>
-                                        </Nav.Item>
-                                }
-                                <Nav.Item>
-                                    <Nav.Link eventKey="link-1" onClick={this.handleClick.bind(this, 'Messages')}>Messages</Nav.Link>
-                                </Nav.Item>
-                                <Nav.Item>
-                                    <Nav.Link eventKey="link-2" onClick={this.handleClick.bind(this, 'Favorite')}>Favorite</Nav.Link>
-                                </Nav.Item>
-                                {
-                                    this.state.isLogged ?
-                                        <Nav.Item>
-                                            <Nav.Link eventKey="disabled" onClick={this.handleClick.bind(this, 'PersonalArea')}>Personal Area</Nav.Link>
-                                        </Nav.Item> : null
-                                }
-                            </Nav>
-                        </Col>
-                    </Row>
-
-                    <Row>
-                        <Col id='panel'>
-                            {this._renderSubComp()}
-                        </Col>
-                    </Row>
-                </>
-            );
-        };
+                {/* Sub-Component Render */}
+                <Row>
+                    <Col id='panel'>
+                        {this._renderSubComp()}
+                    </Col>
+                </Row>
+            </>
+        );
     };
 };

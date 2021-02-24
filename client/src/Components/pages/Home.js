@@ -10,6 +10,7 @@ import { Jumbotron, Container } from 'react-bootstrap';
 // Main Component
 export default class Main extends Component {
 
+    // Render
     render() {
         return (
             <Jumbotron fluid>
@@ -18,7 +19,7 @@ export default class Main extends Component {
                     <p>
                         This is a modified jumbotron that occupies the entire horizontal space of
                         its parent.
-                        </p>
+                    </p>
                 </Container>
             </Jumbotron>
         );

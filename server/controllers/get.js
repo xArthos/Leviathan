@@ -1,13 +1,17 @@
+// Modules
+import fs from 'fs';
+import jwt from 'jsonwebtoken';
+
 // Models
 import User from '../model/User.js';
-import fs from 'fs';
+import WikiPage from '../model/WikiPage.js';
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
 //### Functions ###
-export const usersList = async (req, res) => {
+export const allUsersList = async (req, res) => {
 
     try {
         await User.find()
@@ -18,39 +22,97 @@ export const usersList = async (req, res) => {
     };
 };
 
+export const allWikisList = async (req, res) => {
+
+    try {
+        await WikiPage.find()
+            .then(wikis => res.json(wikis))
+            .catch(err => res.status(404).json({ message: `Error ${err}` }));
+    } catch (error) {
+        res.status(404).json({ message: `Error ${error}` })
+    };
+};
+
+export const authenticate = async (req, res) => {
+
+    const token = req.params.token;
+    console.log(token);
+
+    if (token) {
+        jwt.verify(token, process.env.JWT_SECRET_KEY, (err, decoded) => {
+            if (err) return res.send(400).send('Something went wrong');
+
+            const { email } = JSON.parse(decoded.body);
+            // console.log(JSON.parse(decoded.body));
+
+            User.findOneAndUpdate({ email: email }, { active: true }, (err, data) => {
+                if (err) return res.send(400).send('Something went wrong');
+
+                console.log(data)
+            });
+
+            res.status(200).redirect('http://localhost:3000/login');
+        })
+    } else {
+        return res.json({ error: 'Something went wrong :(' });
+    };
+};
+
 export const userProfilePic = async (req, res) => {
 
     // Usrname of the picture requested
     const userName = req.params.userName;
 
-    const folders = fs.readdirSync(`${process.cwd()}/public/images/profilePicture/`);
+    const file = fs.readFileSync(`${process.cwd()}/public/images/profilePicture/${userName}/profile.jpg`);
 
-    // console.log(folders);
+    res.status(200).send(file);
+};
 
-    let objArray = [];
+export const userProfilePicTemp = async (req, res) => {
 
-    folders.forEach((folder) => {
-        let obj = {};
-        let files = fs.readdirSync(`${process.cwd()}/public/images/profilePicture/${folder}`);
-        obj.folder = folder;
-        obj.files = files;
-        objArray.push(obj);
+    // Usrname of the picture requested
+    const userName = req.params.userName;
+
+    const profileImg = fs.readFileSync(`${process.cwd()}/public/images/profilePicture/${userName}/temp/profile.jpg`);
+
+    res.status(200).send(profileImg);
+};
+
+export const wikiPagePicture = async (req, res) => {
+
+    const { wikiId, picExtension, fileName } = req.params;
+
+    WikiPage.findById(wikiId).populate('author', '_id').exec().then((data) => {
+        const userId = data.author._id;
+
+        // Destination of the file
+        const dir = `${process.cwd()}/public/images/wikis/${userId}/${wikiId}`;
+        const file = fs.readFileSync(`${dir}/${fileName}.${picExtension}`);
+        res.status(200).send(file);
     });
+};
 
-    // console.log(objArray);
-    const searchedUser = objArray.find(function (post, index) {
-        if (post.folder === userName)
-            return true;
+export const wikiPagePublished = async (req, res) => {
+    // console.log('---------------- GET Picture Test --------------------');
+    const { wikiId } = req.params;
+
+    WikiPage.findById(wikiId).populate('author', '_id').exec().then((data) => {
+        res.status(200).send({
+            content: data.content
+        });
     });
-    // console.log(searchedUser);
+};
 
-    fs.readFile(`${process.cwd()}/public/images/profilePicture/${userName}/${searchedUser.files[0]}`, function (err, data) {
-        const base64 = Buffer.from(data).toString('base64');
+export const userWikiPages = async (req, res) => {
+    // console.log('---------------- GET Picture Test --------------------');
+    const { userName } = req.params;
+    // console.log(userName);
 
-        let mimetype = 'image/jpeg';
-
-        const profileImg = `data:${mimetype};base64,${base64}`;
-
-        res.status(200).send(profileImg);
+    User.findOne({userName: userName}).populate('wikiPagesMade').exec((err, data) => {
+        // console.log(data)
+        res.status(200).send({
+            numberOfWikis: data.wikiPagesMade.length,
+            wikis: data.wikiPagesMade
+        });
     });
 };

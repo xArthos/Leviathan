@@ -77,10 +77,9 @@ export default class MainNavBar extends Component {
 
                         <Nav className="mr-auto">
                             <Link className="nav-link" to='/'>Home</Link>
-                            <Link className="nav-link" to='/'>Home</Link>
                             <NavDropdown title="Dropdown" id="basic-nav-dropdown">
-                                <Link className="dropdown-item" to='/usersList'>All Users</Link>
-                                <Link className="dropdown-item" to='#action/3.2'>Home</Link>
+                                <Link className="dropdown-item" to='/allUsersList'>All Users</Link>
+                                <Link className="dropdown-item" to='/wikis'>All wikis</Link>
                                 <Link className="dropdown-item" to={`/about/${this.state.name}`}>About</Link>
                                 <NavDropdown.Divider />
                                 <Link className="dropdown-item" to='/contact'>Contact</Link>
