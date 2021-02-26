@@ -1,6 +1,6 @@
 // Modules
 import React, { Component, useState } from 'react';
-import { Jumbotron, Container, ListGroup, Row, Col, Image, Button, Nav, InputGroup, FormControl, Alert } from 'react-bootstrap';
+import { Jumbotron, Container, ListGroup, Row, Col, Image, Button, Nav, InputGroup, FormControl, Alert, Form } from 'react-bootstrap';
 import { Redirect, useParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import axios from 'axios';
@@ -26,14 +26,90 @@ library.add(faStroopwafel);
 // ! TO FINISH
 
 // Sub Components
-const About = () => {
+const About = (props) => {
+
+    // * useState
+    let [input, setInput] = useState();
+    let [typingTimer, setTypingTimer] = useState(null);
+    let [successMessage, setSuccessMessage] = useState(null);
+    let [failMessage, setFailMessage] = useState(null);
+
+    // URL request
+    const aboutUpdateUrl = `http://localhost:8010/profile:${props.user.userName}/edit/about`;
+
+    // Set the value and timer before sending a request on server
+    const handleOnKeyUpRequest = (event) => {
+        setInput(input = event.target.value);
+
+        clearTimeout(typingTimer);
+        if (input) {
+            setTypingTimer(typingTimer = setTimeout(doneTyping, 1000));
+        }
+
+        // clearTimeout(typingTimer);
+        // setTypingTimer(setTimeout(doneTyping, 1000));
+
+        // // Create da object to send to the server
+        // console.log(input)
+        const data = {
+            data: input,
+            user: props.user
+        }
+        // console.log(data)
+
+        //user is "finished typing," do something
+        function doneTyping() {
+            console.log(data)
+            axios.post(aboutUpdateUrl, data)
+                .then((res) => {
+                    setSuccessMessage(successMessage = res.data.message);
+                    localStorage.setItem('Leviathan', JSON.stringify(res.data.userUpdated));
+
+                    const { user, accessToken, refreshToken } = res.data.userUpdated
+                    props.handler(user, accessToken, refreshToken);
+                })
+                .catch((err) => { setFailMessage(failMessage = err.data.message) })
+        }
+    };
+
+    // Reset the timer after user stopped tyiping
+    const handleOnKeyDownRequest = () => {
+        // setInput(input = event.target.value);
+        clearTimeout(typingTimer);
+    };
 
     // Component Return
     return (
-        <Jumbotron fluid>
-            <Container >
-                <h2>About</h2>
+        <Jumbotron fluid className='profileDisplayPanel'>
+            <Container>
+                <div>
+                    <h2>About</h2>
+                    {
+                        successMessage !== null ?
+                            <Alert variant='success' className='position-absolute top-right'>
+                                {successMessage}
+                            </Alert> :
+                            null
+                    }
+                    {
+                        failMessage !== null ?
+                            <Alert variant='danger' className='position-absolute top-right'>
+                                {failMessage}
+                            </Alert> :
+                            null
+                    }
+                </div>
+
                 <hr />
+
+                <Form.Control
+                    name='about'
+                    as="textarea"
+                    rows={20}
+                    maxLength={600}
+                    defaultValue={props.user.about}
+                    onKeyUp={handleOnKeyUpRequest}
+                    onKeyDown={handleOnKeyDownRequest} />
             </Container>
         </Jumbotron>
     );
@@ -43,7 +119,7 @@ const Messages = () => {
 
     // Component Return
     return (
-        <Jumbotron fluid>
+        <Jumbotron fluid className='profileDisplayPanel'>
             <Container >
                 <h2>Test</h2>
                 <hr />
@@ -56,7 +132,7 @@ const Favorite = () => {
 
     // Component Return
     return (
-        <Jumbotron fluid>
+        <Jumbotron fluid className='profileDisplayPanel'>
             <Container >
                 <h2>Test</h2>
                 <hr />
@@ -209,7 +285,7 @@ const PersonalArea = () => {
 
     // Component Return
     return (
-        <Jumbotron fluid>
+        <Jumbotron fluid className='profileDisplayPanel'>
             <Container >
                 <h2>Infos</h2>
                 <hr />
@@ -373,6 +449,7 @@ export default class ProfileEditInfo extends Component {
         // Binding functions
         this.changeEditMode = this.changeEditMode.bind(this);
         this.confirmUpdateImage = this.confirmUpdateImage.bind(this);
+        this.handler = this.handler.bind(this);
     };
 
 
@@ -381,6 +458,14 @@ export default class ProfileEditInfo extends Component {
 
     ///////////////////////////////////////////////////////////////////////////////////////////
     //? ************************ # FUNCTIONS
+
+    handler = (resUser, resAccessToken, resRefreshToken) => {
+        this.setState({
+            user: resUser,
+            accessToken: resAccessToken,
+            refreshToken: resRefreshToken
+        });
+    };
 
 
 
@@ -394,7 +479,7 @@ export default class ProfileEditInfo extends Component {
     // Render the Component selected
     _renderSubComp() {
         switch (this.state.render) {
-            case 'About': return <About />
+            case 'About': return <About handler={this.handler} user={this.state.user} />
             case 'Messages': return <Messages />
             case 'Favorite': return <Favorite />
             case 'PersonalArea': return <PersonalArea />

@@ -1,6 +1,6 @@
 // Modules
 import React, { Component } from 'react';
-import { Jumbotron, Container, ListGroup, Row, Col, Image, Button, Card, Nav, Alert, CardDeck } from 'react-bootstrap';
+import { Jumbotron, Container, ListGroup, Row, Col, Image, Button, Card, Nav, Alert, CardDeck, Form } from 'react-bootstrap';
 import { useParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import axios from 'axios';
@@ -25,14 +25,25 @@ library.add(faStroopwafel);
 // ! TO FINISH
 
 // Sub Components
-const About = () => {
+const About = (props) => {
+
+    // Take the user passed from the parent Component
+    const passedUser = props.user;
 
     // Component Return
     return (
-        <Jumbotron fluid>
+        <Jumbotron fluid className='profileDisplayPanel'>
             <Container >
                 <h2>About</h2>
                 <hr />
+                <Form.Control
+                    id='test'
+                    name='about'
+                    as="textarea"
+                    rows={20}
+                    maxLength={600}
+                    defaultValue={passedUser.about}
+                    disabled />
             </Container>
         </Jumbotron>
     );
@@ -42,7 +53,7 @@ const Messages = () => {
 
     // Component Return
     return (
-        <Jumbotron fluid>
+        <Jumbotron fluid className='profileDisplayPanel'>
             <Container >
                 <h2>Test</h2>
                 <hr />
@@ -55,7 +66,7 @@ const Favorite = () => {
 
     // Component Return
     return (
-        <Jumbotron fluid>
+        <Jumbotron fluid className='profileDisplayPanel'>
             <Container >
                 <h2>Test</h2>
                 <hr />
@@ -69,9 +80,7 @@ const PersonalArea = () => {
     // Taking the user from Redux-Instance
     const { userName } = useParams();
     const data = useSelector((state) => state.users);
-    // console.log(userName);
     const user = data.filter(user => user.userName === userName);
-    // console.log(thisUser[0].email);
     const thisUser = user[0];
 
 
@@ -83,7 +92,7 @@ const PersonalArea = () => {
 
     // Component Return
     return (
-        <Jumbotron fluid>
+        <Jumbotron fluid className='profileDisplayPanel'>
             <Container >
                 <h2>Infos</h2>
                 <hr />
@@ -182,6 +191,34 @@ export default class Profile extends Component {
     //? ************************ FUNCTIONS
 
 
+    //? ******************** Load User's Wikis *******************************************
+    componentDidMount() {
+        axios.get(`http://localhost:8010/${this.state.userName}/wikis`)
+            .then(res => {
+                // console.log(res.data);
+                this.setState({
+                    userWikis: res.data.numberOfWikis,
+                    wikiDatas: res.data.wikis
+                })
+                // console.log(this.state);
+            })
+            .catch(err => console.log(err));
+
+        if (this.state.user === '') {
+            axios.get('http://localhost:8010/allUsersList')
+                .then((res) => {
+                    let fetchedUser = res.data.filter(user => user.userName === this.state.userName);
+                    this.setState({
+                        user: fetchedUser[0]
+                    });
+                })
+                .catch((err) => console.log(err));
+        }
+
+    };
+    //? **********************************************************************************
+
+
     //? ******************** Sub-Component Handlers **************************************
     // Take and set the name of the Sub-Component to render
     handleClick(component) {
@@ -193,7 +230,7 @@ export default class Profile extends Component {
     _renderSubComp() {
         if (this.state.isLogged) {
             switch (this.state.render) {
-                case 'About': return <About />
+                case 'About': return <About user={this.state.user} />
                 case 'Messages': return <Messages />
                 case 'Favorite': return <Favorite />
                 case 'PersonalArea': return <PersonalArea />
@@ -201,7 +238,7 @@ export default class Profile extends Component {
             }
         } else {
             switch (this.state.render) {
-                case 'About': return <About />
+                case 'About': return <About user={this.state.user} />
                 case 'Messages': return <Messages />
                 case 'Favorite': return <Favorite />
                 default: return <About />
@@ -244,22 +281,6 @@ export default class Profile extends Component {
     //? **********************************************************************************
 
 
-    //? ******************** Load User's Wikis *******************************************
-    componentDidMount() {
-        axios.get(`http://localhost:8010/${this.state.userName}/wikis`)
-            .then(res => {
-                // console.log(res.data);
-                this.setState({
-                    userWikis: res.data.numberOfWikis,
-                    wikiDatas: res.data.wikis
-                })
-                // console.log(this.state);
-            })
-            .catch(err => console.log(err));
-    };
-    //? **********************************************************************************
-
-
     ///////////////////////////////////////////////////////////////////////////////////////////
     ///////////////////////////////////////////////////////////////////////////////////////////
 
@@ -274,10 +295,10 @@ export default class Profile extends Component {
                 <Jumbotron fluid>
                     <Row className='px-3'>
                         <Col md={3} className='text-center'>
-                            <Image src={`http://localhost:8010/${this.props.match.params.userName}/profilePicture`} thumbnail />
+                            <Image src={`http://localhost:8010/${this.state.userName}/profilePicture`} thumbnail />
                         </Col>
                         <Col md={7}>
-                            <h1>{this.props.match.params.userName}</h1>
+                            <h1>{this.state.userName}</h1>
                         </Col>
                         {
                             this.state.isLogged ?
@@ -363,7 +384,6 @@ export default class Profile extends Component {
                                 </Card>
                             </Col>
                             :
-
                             null
                     }
                     {
@@ -395,14 +415,12 @@ export default class Profile extends Component {
                                     </Col>
                                 )
                             })
-
                             :
-
                             <Col md='3' key={`noWiki`}>
                                 <Card className='bg-dark text-white'>
                                     <Card.Img src='images/test.jpg' alt='Card image' />
                                     <Card.ImgOverlay className='d-flex flex-column justify-content-center'>
-                                        <Card.Title style={{alignSelf: 'center'}}>No Wikis</Card.Title>
+                                        <Card.Title style={{ alignSelf: 'center' }}>No Wikis</Card.Title>
                                     </Card.ImgOverlay>
                                 </Card>
                             </Col>

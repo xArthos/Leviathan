@@ -33,6 +33,18 @@ const Wikis = () => {
     fetchWikis()
     console.log(wikis)
 
+        // // Call once the user from the DB
+    // useEffect(() => {
+    //     axios.get('http://localhost:8010/allUsersList')
+    //         .then((res) => {
+    //             let user = res.data.filter(user => user.userName === userName);
+    //             requestedUser.current = user[0];
+    //             document.getElementById('test').value = requestedUser.current.about;
+    //             console.log('called')
+    //         })
+    //         .catch((err) => console.log(err));
+    // }, [userName]);
+
     // Component Return
     return (
         <Container>

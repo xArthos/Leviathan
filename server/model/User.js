@@ -3,10 +3,7 @@ import mongoose from 'mongoose';
 
 // Setting a Schema
 const userSchema = mongoose.Schema({
-    type: {
-        type: String,
-        default: 'user'
-    },
+    type: { type: String, default: 'user' },
     userName: {
         type: String,
         required: [true, 'Please write your username.'],
@@ -49,14 +46,9 @@ const userSchema = mongoose.Schema({
         path: String,
         size: Number
     },
-    wikiPagesMade: [{
-        type: mongoose.Schema.ObjectId,
-        ref: 'WikiPage'
-    }],
-    active: {
-        type: Boolean,
-        default: false
-    }
+    wikiPagesMade: [{ type: mongoose.Schema.ObjectId, ref: 'WikiPage' }],
+    about: { type: String, default: null },
+    active: { type: Boolean, default: false }
 }, { timestamps: true });
 
 // Virtual

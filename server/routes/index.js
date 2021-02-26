@@ -28,7 +28,8 @@ import {
     publishWiki,
     deleteFile,
     createNewWiki,
-    deleteWiki
+    deleteWiki,
+    updateAbout
 } from '../controllers/post.js'
 
 
@@ -116,7 +117,10 @@ router.get('/wiki/:wikiId', wikiPagePublished);
 // POST
 router.post('/login', login);
 router.post('/register', uploadProfilePic.single('profilePicture'), validateUserInformations, checkExitEmail, checkExitUsername, signUp);
+
 router.post('/profile::userName/edit/newProfilePicUpload', uploadProfilePic.single('editProfilePicture'), newProfilePicUpload);
+router.post('/profile::userName/edit/about', updateAbout);
+
 router.post('/newWiki/picturesUpload/:userId/:wikiId', uploadNewWikiPagePics.single('upload'), newWikiImageEditorUpload);
 router.post('/confirm', setProfilePic);
 router.post('/newWiki/publish/:userId/:wikiId', publishWiki);

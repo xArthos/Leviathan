@@ -116,9 +116,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 
-
-
-
+/* Dropping Image Area CSS */
 #droppingArea {
     align-items: center;
     display: flex;
@@ -133,9 +131,6 @@ h1, h2, h3, h4, h5, h6 {
     background-color: rgba(138, 79, 40, 0.397);
 }
 
-
-
-
 .square-dotted-box {
     border: 4px dashed rgba(0, 0, 0, 0.3);
     border-radius: 4px;
@@ -145,23 +140,25 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 
-
+/* Profile Wiki Cards CSS */
 .delete-icon:hover {
     cursor: pointer;
 }
 
+
+/* Footer CSS */
 #footer {
     margin-bottom: 0 !important;
 }
 
 
+/* Sizing CSS */
 .mw-content {
     max-width: max-content;
 }
 
 
-
-
+/* Profile Thumbnail image CSS */
 .img-thumbnail {
     background: linear-gradient(120deg, rgb(255, 196, 0) 0%, rgb(255, 55, 0) 100%);
     border: 3px solid transparent;
@@ -170,4 +167,31 @@ h1, h2, h3, h4, h5, h6 {
     object-fit: cover;
 	width: 250px;
 	height: 250px;
+}
+
+/* Form CSS */
+.form-control {
+	background-color: transparent;
+    border: none;
+    color: #000000;
+}
+
+.form-control:focus {
+	background-color: transparent;
+    box-shadow: none;
+    color: #1a1a1a;
+}
+
+.form-control:disabled {
+    background-color: transparent;
+}
+
+
+/* Profile Display Info */
+.profileDisplayPanel {
+    height: 700px;
+}
+
+.profileDisplayPanel textarea {
+    resize: none;
 }

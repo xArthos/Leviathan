@@ -319,6 +319,43 @@ export const setProfilePic = async (req, res) => {
     }
 };
 
+export const updateAbout = async (req, res) => {
+
+    try {
+        // User Informations
+        const { data, user } = req.body;
+
+        User.findOneAndUpdate({ userName: user.userName }, { about: data }, { upsert: true }, (err, oldUserData) => {
+            if (err) {
+                // Negative Response
+                res.status(400).send({
+                    message: err
+                });
+            }
+            else {
+                User.findOne({ userName: oldUserData.userName }, (err, user) => {
+                    console.log(user)
+                    // Positive Response
+                    res.status(200).send({
+                        message: 'About successfully changed',
+                        userUpdated: {
+                            user: user,
+                            //! To Improve
+                            accessToken: null,
+                            refreshToken: null
+                        }
+                    });
+                });
+            };
+        });
+    } catch (error) {
+        // Negative Response
+        res.status(400).send({
+            message: error
+        });
+    };
+};
+
 export const createNewWiki = async (req, res) => {
     const userId = req.params.userId;
 
