@@ -13,7 +13,10 @@ import {
     userProfilePicTemp,
     wikiPagePicture,
     wikiPagePublished,
-    userWikiPages
+    userWikiPages,
+    formSelectArrowIcon,
+    lastPublishedWikisList,
+    wikiPageCardBackground
 } from '../controllers/get.js'
 
 import {
@@ -75,6 +78,35 @@ const uploadProfilePic = multer({
     storage: storageProfilePic
 });
 
+// Profile Pictures Storage
+const storageWikiCardBg = multer.diskStorage({
+
+    destination: (req, file, cb) => {
+
+        const { userId, wikiId } = req.params;
+
+        // Destination of the file
+        const dir = `${process.cwd()}/public/images/wikis/${userId}/${wikiId}/`;
+
+        // Create a new folder if it doesn't exit
+        if (!fs.existsSync(dir)) {
+            fs.mkdirSync(dir, { recursive: true });
+        };
+
+        // Callback
+        cb(null, dir);
+    },
+
+    filename: (req, file, cb) => {
+        // console.log(file)
+        cb(null, `card-bg${path.extname(file.originalname)}`);
+    }
+
+});
+const uploadWikiCardBg = multer({
+    storage: storageWikiCardBg
+});
+
 // New Wiki Page Storage
 const storageNewWikiPagePics = multer.diskStorage({
     destination: (req, file, cb) => {
@@ -112,7 +144,11 @@ router.get('/:userName/profilePicture', userProfilePic);
 router.get('/:userName/profilePicture/temp', userProfilePicTemp);
 router.get('/:userName/wikis', userWikiPages);
 router.get('/:wikiId/img/:picExtension/:fileName', wikiPagePicture);
+router.get('/img/bg/:wikiId/:picExtension', wikiPageCardBackground);
 router.get('/wiki/:wikiId', wikiPagePublished);
+router.get('/style/selectArrow', formSelectArrowIcon);
+router.get('/lastPublishedWikis', lastPublishedWikisList);
+
 
 // POST
 router.post('/login', login);
@@ -123,7 +159,7 @@ router.post('/profile::userName/edit/about', updateAbout);
 
 router.post('/newWiki/picturesUpload/:userId/:wikiId', uploadNewWikiPagePics.single('upload'), newWikiImageEditorUpload);
 router.post('/confirm', setProfilePic);
-router.post('/newWiki/publish/:userId/:wikiId', publishWiki);
+router.post('/newWiki/publish/:userId/:wikiId', uploadWikiCardBg.single('cardBackGroundImage'), publishWiki);
 router.post('/deletePhoto/:wikiId/:fileName/:fileExt', deleteFile);
 router.post('/wiki/create/:userId', createNewWiki);
 router.post('/wiki/delete/:wikiId', deleteWiki);

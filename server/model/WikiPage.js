@@ -9,16 +9,26 @@ const wikiPageSchema = mongoose.Schema({
         required: true,
         default: false
     },
-    author: { 
+    author: {
         type: mongoose.Schema.ObjectId,
         ref: 'User',
         required: true
     },
-    title : { type: String, required: true, default: 'New Wiki' },
+    title: { type: String, required: true, default: 'New Wiki' },
     gameSerie: { type: String, required: true, default: 'None' },
     genre: { type: String, required: true, default: 'None' },
-    type: { type: String, required: true, default: 'Wiki'},
-    relation: { type: String, required: true, default: 'General' }
+    type: { type: String, required: true, default: 'Wiki' },
+    relation: { type: String, required: true, default: 'General' },
+    cardBg: {
+        fieldname: String,
+        originalname: String,
+        encoding: String,
+        mimetype: String,
+        destination: String,
+        filename: String,
+        path: String,
+        size: Number
+    }
 }, { timestamps: true });
 
 // Converting Schema as a Module

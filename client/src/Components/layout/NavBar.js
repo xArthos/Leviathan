@@ -64,17 +64,19 @@ export default class MainNavBar extends Component {
     render() {
         return (
             <>
-                <Navbar bg="dark" expand="lg" variant="dark">
-                    <Link className="navbar-brand" to='/'><img
-                        src="/images/leviatahan_logo_s.png"
-                        width="110"
-                        height="75"
-                        className="d-inline-block align-top"
-                        alt="Leviathan logo"
-                    /></Link>
+                <Navbar expand="lg" variant="dark" id='navbar'>
+                    <Link className="navbar-brand" to='/'>
+                        <img src="/images/leviatahan_logo_s.png"
+                            width="110"
+                            height="75"
+                            className="d-inline-block align-top"
+                            alt="Leviathan logo"
+                        />
+                    </Link>
                     <Navbar.Toggle aria-controls="basic-navbar-nav" />
                     <Navbar.Collapse id="basic-navbar-nav">
 
+                        {/* Left Navbar Side */}
                         <Nav className="mr-auto">
                             <Link className="nav-link" to='/'>Home</Link>
                             <NavDropdown title="Dropdown" id="basic-nav-dropdown">
@@ -86,6 +88,7 @@ export default class MainNavBar extends Component {
                             </NavDropdown>
                         </Nav>
 
+                        {/* Right Navbar Side */}
                         <Nav>
                             {
                                 this.state.user ?

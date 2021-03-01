@@ -606,52 +606,36 @@ export default class ProfileEditInfo extends Component {
             </>
         )
 
-        // Profile picture element
-        const profilePicElement = (
-            <>
-                {
-                    this.state.editProfilePicMode === '' ?
-                        <Col md='4' className='mw-content'>
-                            <Image src={this.state.profilePicture} thumbnail />
-
-                            <Button
-                                variant='warning'
-                                className='position-absolute top-right'
-                                onClick={() => this.changeEditMode()}>
-                                <FontAwesomeIcon icon={faPen} style={{ color: 'red' }} />
-                            </Button>
-                        </Col>
-                        :
-                        <Col md='4' className='mw-content'>
-                            <Image src={this.state.profilePicture} thumbnail />
-                        </Col>
-                }
-            </>
-        );
-
         // Return of the function
         return (
             <>
-                <Row>
-                    {profilePicElement}
+                <Row className='px-3 mx-0'>
+                    {/* Profile Picture */}
+                    <Col md='3'>
+                        <div className='mw-content m-auto'>
+                            <Image src={this.state.profilePicture} thumbnail />
+                        </div>
+                    </Col>
 
                     {/* User's Name */}
-                    <Col md={4}>
+                    <Col md={7}>
                         <h1>{this.props.match.params.userName}</h1>
                     </Col>
 
-                    {/* Edit Button */}
-                    <Col md={4}>
-                        <Button>Edit Infos</Button>
+                    {/* Close Edit-page Button */}
+                    <Col md={2}>
+                        <Button variant='warning' onClick={() => this.props.history.push(`/profile:${this.state.user.userName}`)}>Close Edit Page</Button>
                     </Col>
                 </Row>
 
-                <h2 className='mt-3'>Upload New Profile Picture</h2>
-                <hr className='mb-2' />
+                <Container>
+                    <h2 className='mt-3'>Upload New Profile Picture</h2>
+                    <hr className='mb-3' />
 
-                <Row>
-                    {editElement}
-                </Row>
+                    <Row>
+                        {editElement}
+                    </Row>
+                </Container>
             </>
         );
     };
@@ -661,16 +645,19 @@ export default class ProfileEditInfo extends Component {
 
         const renderElement = (
             <>
-                <Row>
+                <Row className='px-3 mx-0'>
                     {/* Profile Picture and Edit function */}
-                    <Col md='4' className='mw-content'>
-                        <Image src={this.state.profilePicture} thumbnail />
-                        <Button
-                            variant='warning'
-                            className='position-absolute top-right'
-                            onClick={() => this.changeEditMode()}>
-                            <FontAwesomeIcon icon={faPen} style={{ color: 'red' }} />
-                        </Button>
+                    <Col md='3'>
+                        <div className='mw-content m-auto'>
+                            <Image src={this.state.profilePicture} thumbnail />
+                            <Button
+                                variant='warning'
+                                className='position-absolute top-right'
+                                onClick={() => this.changeEditMode()}>
+                                <FontAwesomeIcon icon={faPen} style={{ color: 'red' }} />
+                            </Button>
+                        </div>
+
 
                         {this.state.profileUpdatedMsg ?
                             <Alert variant='success'>
@@ -681,13 +668,13 @@ export default class ProfileEditInfo extends Component {
                     </Col>
 
                     {/* User's Name */}
-                    <Col md={4}>
+                    <Col md={7}>
                         <h1>{this.props.match.params.userName}</h1>
                     </Col>
 
-                    {/* Edit Button */}
-                    <Col md={4}>
-                        <Button>Edit Infos</Button>
+                    {/* Close Edit-page Button */}
+                    <Col md={2}>
+                        <Button variant='warning' onClick={() => this.props.history.push(`/profile:${this.state.user.userName}`)}>Close Edit Page</Button>
                     </Col>
                 </Row>
             </>
@@ -723,53 +710,45 @@ export default class ProfileEditInfo extends Component {
         return (
             <>
                 {/* Title, Profile Picture, Edit Button */}
-                <Jumbotron fluid>
-                    <Container >
-                        {!this.state.editProfilePicMode ?
-                            this.renderDefaultView()
-                            :
-                            this.renderEditView()
-                        }
-                    </Container>
+                <Jumbotron fluid className='header'>
+                    {!this.state.editProfilePicMode ?
+                        this.renderDefaultView()
+                        :
+                        this.renderEditView()
+                    }
                 </Jumbotron>
 
-                {/* Sub-Component Nav Tab */}
-                <Row>
-                    <Col>
-                        <Nav justify variant="tabs">
-                            {
-                                this.state.render === 'About' ?
-                                    <Nav.Item>
-                                        <Nav.Link eventKey="about" onClick={this.handleClick.bind(this, 'About')} active>About</Nav.Link>
-                                    </Nav.Item>
-                                    :
-                                    <Nav.Item>
-                                        <Nav.Link eventKey="about" onClick={this.handleClick.bind(this, 'About')}>About</Nav.Link>
-                                    </Nav.Item>
-                            }
-                            <Nav.Item>
-                                <Nav.Link eventKey="messages" onClick={this.handleClick.bind(this, 'Messages')}>Messages</Nav.Link>
-                            </Nav.Item>
+                <div id='mainContainer'>
+                    {/* Sub-Component Nav Tab */}
+                    <Nav justify variant="tabs">
+                        {
+                            this.state.render === 'About' ?
+                                <Nav.Item>
+                                    <Nav.Link eventKey="about" onClick={this.handleClick.bind(this, 'About')} active>About</Nav.Link>
+                                </Nav.Item>
+                                :
+                                <Nav.Item>
+                                    <Nav.Link eventKey="about" onClick={this.handleClick.bind(this, 'About')}>About</Nav.Link>
+                                </Nav.Item>
+                        }
+                        <Nav.Item>
+                            <Nav.Link eventKey="messages" onClick={this.handleClick.bind(this, 'Messages')}>Messages</Nav.Link>
+                        </Nav.Item>
 
-                            <Nav.Item>
-                                <Nav.Link eventKey="favourite" onClick={this.handleClick.bind(this, 'Favorite')}>Favorite</Nav.Link>
-                            </Nav.Item>
-                            {
-                                this.state.isLogged ?
-                                    <Nav.Item>
-                                        <Nav.Link eventKey="private" onClick={this.handleClick.bind(this, 'PersonalArea')}>Personal Area</Nav.Link>
-                                    </Nav.Item> : null
-                            }
-                        </Nav>
-                    </Col>
-                </Row>
+                        <Nav.Item>
+                            <Nav.Link eventKey="favourite" onClick={this.handleClick.bind(this, 'Favorite')}>Favorite</Nav.Link>
+                        </Nav.Item>
+                        {
+                            this.state.isLogged ?
+                                <Nav.Item>
+                                    <Nav.Link eventKey="private" onClick={this.handleClick.bind(this, 'PersonalArea')}>Personal Area</Nav.Link>
+                                </Nav.Item> : null
+                        }
+                    </Nav>
 
-                {/* Sub-Component Render */}
-                <Row>
-                    <Col id='panel'>
-                        {this._renderSubComp()}
-                    </Col>
-                </Row>
+                    {/* Sub-Component Render */}
+                    {this._renderSubComp()}
+                </div>
             </>
         );
     };

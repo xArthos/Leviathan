@@ -37,7 +37,7 @@ const Users = () => {
 
     // Component Return
     return (
-        <Container>
+        <Container className='header'>
             <h1>Users: {count}</h1>
             <Table striped bordered hover>
                 <thead>

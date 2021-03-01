@@ -96,13 +96,13 @@ export default class Login extends Component {
     render() {
         return (
             <>
-                {   this.state.message ?
-                    <Alert variant='danger'>
-                        {this.state.message}
-                    </Alert> :
-                    null
-                }
-                <Form onSubmit={this.loginRequest}>
+                <Form onSubmit={this.loginRequest} className='header'>
+                    {this.state.message ?
+                        <Alert variant='danger'>
+                            {this.state.message}
+                        </Alert> :
+                        null
+                    }
                     <Form.Group controlId='email'>
                         <Form.Label>Email address</Form.Label>
                         <Form.Control type='email' placeholder='Enter email' name='email' />

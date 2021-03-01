@@ -412,12 +412,11 @@ export const deleteFile = async (req, res) => {
 };
 
 export const publishWiki = async (req, res) => {
-    const { content, title, gameSerie, type, genre, relation } = req.body;
+
+    const { content, title, gameSerie, type, genre, relation } = JSON.parse(req.body.body);
     const { userId, wikiId } = req.params;
 
-    console.log(req.body)
-
-    WikiPage.findOneAndUpdate({ _id: wikiId }, { content: content, published: true, title: title, gameSerie: gameSerie, type: type, genre: genre, relation: relation }, { upsert: true }, (err, res) => {
+    WikiPage.findOneAndUpdate({ _id: wikiId }, { content: content, published: true, title: title, gameSerie: gameSerie, type: type, genre: genre, relation: relation, cardBg: req.file }, { upsert: true }, (err, res) => {
         if (err) {
             throw err;
         }

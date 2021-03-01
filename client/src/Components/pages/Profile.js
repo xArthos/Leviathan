@@ -292,8 +292,8 @@ export default class Profile extends Component {
         return (
             <>
                 {/* Title, Profile Picture, Edit Button */}
-                <Jumbotron fluid>
-                    <Row className='px-3'>
+                <Jumbotron fluid className='header'>
+                    <Row className='px-3 mx-0'>
                         <Col md={3} className='text-center'>
                             <Image src={`http://localhost:8010/${this.state.userName}/profilePicture`} thumbnail />
                         </Col>
@@ -311,121 +311,111 @@ export default class Profile extends Component {
                     </Row>
                 </Jumbotron>
 
-                {/* NavLinks Sub-Components */}
-                <Row>
-                    <Col>
-                        <Nav justify variant="tabs">
+                <div id='mainContainer'>
+                    {/* NavLinks Sub-Components */}
+                    <Nav justify variant="tabs">
+                        {
+                            this.state.render === 'About' ?
+                                <Nav.Item>
+                                    <Nav.Link eventKey="link-3" onClick={this.handleClick.bind(this, 'About')} active>About</Nav.Link>
+                                </Nav.Item>
+                                :
+                                <Nav.Item>
+                                    <Nav.Link eventKey="link-3" onClick={this.handleClick.bind(this, 'About')}>About</Nav.Link>
+                                </Nav.Item>
+                        }
+                        <Nav.Item>
+                            <Nav.Link eventKey="link-1" onClick={this.handleClick.bind(this, 'Messages')}>Messages</Nav.Link>
+                        </Nav.Item>
+                        <Nav.Item>
+                            <Nav.Link eventKey="link-2" onClick={this.handleClick.bind(this, 'Favorite')}>Favorite</Nav.Link>
+                        </Nav.Item>
+                        {
+                            this.state.isLogged ?
+                                <Nav.Item>
+                                    <Nav.Link eventKey="disabled" onClick={this.handleClick.bind(this, 'PersonalArea')}>Personal Area</Nav.Link>
+                                </Nav.Item> : null
+                        }
+                    </Nav>
+
+                    {/* Subcomponent Section Rendering */}
+                    {this._renderSubComp()}
+
+                    {/* Title Wikis */}
+                    <Jumbotron fluid>
+                        <Container>
+                            <h2>{this.props.match.params.userName}'s Wikis: {this.state.userWikis}</h2>
                             {
-                                this.state.render === 'About' ?
-                                    <Nav.Item>
-                                        <Nav.Link eventKey="link-3" onClick={this.handleClick.bind(this, 'About')} active>About</Nav.Link>
-                                    </Nav.Item>
-                                    :
-                                    <Nav.Item>
-                                        <Nav.Link eventKey="link-3" onClick={this.handleClick.bind(this, 'About')}>About</Nav.Link>
-                                    </Nav.Item>
+                                this.state.message !== '' ?
+                                    <Alert variant={this.state.alertVariant}>
+                                        {this.state.message}
+                                    </Alert> : null
                             }
-                            <Nav.Item>
-                                <Nav.Link eventKey="link-1" onClick={this.handleClick.bind(this, 'Messages')}>Messages</Nav.Link>
-                            </Nav.Item>
-                            <Nav.Item>
-                                <Nav.Link eventKey="link-2" onClick={this.handleClick.bind(this, 'Favorite')}>Favorite</Nav.Link>
-                            </Nav.Item>
-                            {
-                                this.state.isLogged ?
-                                    <Nav.Item>
-                                        <Nav.Link eventKey="disabled" onClick={this.handleClick.bind(this, 'PersonalArea')}>Personal Area</Nav.Link>
-                                    </Nav.Item> : null
-                            }
-                        </Nav>
-                    </Col>
-                </Row>
+                        </Container>
+                    </Jumbotron>
 
-                {/* Subcomponent Section Rendering */}
-                <Row>
-                    <Col md='12' id='panel'>
-                        {this._renderSubComp()}
-                    </Col>
-                </Row>
-
-                {/* Title Wikis */}
-                <Row>
-                    <Col>
-                        <Jumbotron fluid>
-                            <Container>
-                                <h2>{this.props.match.params.userName}'s Wikis: {this.state.userWikis}</h2>
-                                {
-                                    this.state.message !== '' ?
-                                        <Alert variant={this.state.alertVariant}>
-                                            {this.state.message}
-                                        </Alert> : null
-                                }
-                            </Container>
-                        </Jumbotron>
-                    </Col>
-                </Row>
-
-                {/* User's Wikis Area */}
-                <CardDeck>
-                    {
-                        this.state.isLogged ?
-                            <Col md='3' key='newWikiCard'>
-                                <Card className='bg-dark text-white'>
-                                    <Card.Img src='images/test.jpg' alt='Card image' />
-                                    <Card.ImgOverlay>
-                                        <Card.Body className='d-flex flex-column align-items-center justify-content-around h-100 rgba-black-strong py-5 px-4'>
-                                            <FontAwesomeIcon size='6x' icon={faPlus} />
-                                            <br />
-                                            <Button variant='warning' onClick={() => this.createNewWiki()}>
-                                                Create a New Wiki Page
+                    {/* User's Wikis Area */}
+                    <CardDeck>
+                        {
+                            this.state.isLogged ?
+                                <Col md='3' key='newWikiCard'>
+                                    <Card className='bg-dark text-white'>
+                                        <Card.Img src='images/test.jpg' alt='Card image' />
+                                        <Card.ImgOverlay>
+                                            <Card.Body className='d-flex flex-column align-items-center justify-content-around h-100 rgba-black-strong py-5 px-4'>
+                                                <FontAwesomeIcon size='6x' icon={faPlus} />
+                                                <br />
+                                                <Button variant='warning' onClick={() => this.createNewWiki()}>
+                                                    Create a New Wiki Page
                                             </Button>
-                                        </Card.Body>
-                                    </Card.ImgOverlay>
-                                </Card>
-                            </Col>
-                            :
-                            null
-                    }
-                    {
-                        this.state.wikiDatas.length !== 0 ?
-                            this.state.wikiDatas.map((wiki) => {
+                                            </Card.Body>
+                                        </Card.ImgOverlay>
+                                    </Card>
+                                </Col>
+                                :
+                                null
+                        }
+                        {
+                            this.state.wikiDatas.length !== 0 ?
+                                this.state.wikiDatas.map((wiki) => {
 
-                                return (
-                                    <Col md='3' key={`${wiki._id}`}>
-                                        <Card className='bg-dark text-white'>
-                                            <Card.Img src='images/test.jpg' alt='Card image' />
-                                            <Card.ImgOverlay className='d-flex flex-column align-items-center justify-content-between'>
-                                                <Card.Title>{wiki.title}</Card.Title>
-                                                <Card.Text>
-                                                    <a href={`/wiki/${wiki._id}`}>Go to the Wiki</a>
-                                                    <br />
+                                    return (
+                                        <Col md='3' key={`${wiki._id}`}>
+                                            <Card className='bg-dark text-white'>
+                                                <Card.Img src={`http://localhost:8010/img/bg/${wiki._id}/${wiki.cardBg.originalname.split('.')[1]}`} alt='Card image' />
+                                                <Card.ImgOverlay className='d-flex flex-column align-items-center justify-content-between'>
+                                                    <Card.Title>{wiki.title}</Card.Title>
+                                                    <Card.Text>
+                                                        <a href={`/wiki/${wiki._id}`}>Go to the Wiki</a>
+                                                        <br />
                                                     Last update: <Moment fromNow>{wiki.updatedAt}</Moment>
-                                                </Card.Text>
-                                                {
-                                                    this.state.isLogged ?
-                                                        <FontAwesomeIcon
-                                                            title='Delete permantely this page'
-                                                            className='position-absolute align-self-end delete-icon'
-                                                            onClick={() => this.deleteWiki(`${wiki._id}`)}
-                                                            icon={faTrashAlt}
-                                                            style={{ color: 'red' }} /> : null
-                                                }
-                                            </Card.ImgOverlay>
-                                        </Card>
-                                    </Col>
-                                )
-                            })
-                            :
-                            <Col md='3' key={`noWiki`}>
-                                <Card className='bg-dark text-white'>
-                                    <Card.Img src='images/test.jpg' alt='Card image' />
-                                    <Card.ImgOverlay className='d-flex flex-column justify-content-center'>
-                                        <Card.Title style={{ alignSelf: 'center' }}>No Wikis</Card.Title>
-                                    </Card.ImgOverlay>
-                                </Card>
-                            </Col>
-                    }
-                </CardDeck>
+                                                    </Card.Text>
+                                                    {
+                                                        this.state.isLogged ?
+                                                            <FontAwesomeIcon
+                                                                title='Delete permantely this page'
+                                                                className='position-absolute align-self-end delete-icon'
+                                                                onClick={() => this.deleteWiki(`${wiki._id}`)}
+                                                                icon={faTrashAlt}
+                                                                style={{ color: 'red' }} /> : null
+                                                    }
+                                                </Card.ImgOverlay>
+                                            </Card>
+                                        </Col>
+                                    )
+                                })
+                                :
+                                <Col md='3' key={`noWiki`}>
+                                    <Card className='bg-dark text-white'>
+                                        <Card.Img src='images/test.jpg' alt='Card image' />
+                                        <Card.ImgOverlay className='d-flex flex-column justify-content-center'>
+                                            <Card.Title style={{ alignSelf: 'center' }}>No Wikis</Card.Title>
+                                        </Card.ImgOverlay>
+                                    </Card>
+                                </Col>
+                        }
+                    </CardDeck>
+                </div>
             </>
         );
     };

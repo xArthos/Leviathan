@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 import axios from 'axios';
 import { CKEditor } from '@ckeditor/ckeditor5-react';
 import BalloonEditor from "@ckeditor/ckeditor5-build-balloon-block";
+import { Container } from 'react-bootstrap';
 
 
 
@@ -80,11 +81,13 @@ export default class NewWikiPage extends Component {
 
         return (
             <>
+            <Container className='header'>
                 <CKEditor
                     disabled
                     editor={BalloonEditor}
                     data={`${this.state.content}`}
                 />
+            </Container>
             </>
         );
     }

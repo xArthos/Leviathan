@@ -282,6 +282,24 @@ export default class NewWikiPage extends Component {
             [name]: value
         });
     };
+
+    // Handle the file uploaded by the user
+    inputCardBg = (event) => {
+
+        // Take the input field
+        const target = event.target;
+
+        // Take the name from the input field
+        const name = target.name;
+
+        // Take the file from the input field
+        const file = target.files[0];
+
+        // Assign the file from the form in the state
+        this.setState({
+            [name]: file
+        })
+    };
     //? ****************************************************************************
 
 
@@ -299,17 +317,20 @@ export default class NewWikiPage extends Component {
     requestHandler = (event) => {
         event.preventDefault();
 
+        const { cardBackGroundImage } = this.state;
         const data = this.state;
+        const formData = new FormData();
 
-        // console.log(data);
+        formData.append('body', JSON.stringify(data));
+        formData.append('cardBackGroundImage', cardBackGroundImage);
 
         const config = {
             headers: {
-                'content-type': 'application/json'
+                'content-type': 'multipart/form-data'
             }
         };
 
-        axios.post(`http://localhost:8010/newWiki/publish/${loggedUser.user._id}/${this.state.wikiId}`, data, config)
+        axios.post(`http://localhost:8010/newWiki/publish/${loggedUser.user._id}/${this.state.wikiId}`, formData, config)
             .then((result) => {
 
                 console.log(result);
@@ -370,11 +391,13 @@ export default class NewWikiPage extends Component {
                 <Form
                     autoComplete="off"
                     onSubmit={this.requestHandler}
-                    ref={form => this.form = form}>
+                    ref={form => this.form = form}
+                    id='form'>
 
-                    <Jumbotron fluid>
+                    <Jumbotron fluid className='header'>
                         <Container>
                             <h2>New Wikipage settings</h2>
+                            <hr />
                             <Row>
                                 <Col md="6">
                                     <Form.Group controlId="tile">
@@ -391,7 +414,7 @@ export default class NewWikiPage extends Component {
 
                             <Row>
                                 <Col md="6">
-                                    <Form.Group controlId="tile">
+                                    <Form.Group controlId="gameSerie" className='selectdiv'>
                                         <Form.Label>Game Serie</Form.Label>
                                         <Form.Control as="select" defaultValue="N/A" name="gameSerie" required onChange={this.inputChange}>
                                             <option value="N/A">N/A</option>
@@ -453,29 +476,38 @@ export default class NewWikiPage extends Component {
                                     </Form.Group>
                                 </Col>
                             </Row>
+
+                            <Row>
+                                <Col md="12">
+                                    <Form.File controlId="cardBackGroundImage">
+                                        <Form.File.Label>Type of page</Form.File.Label>
+                                        <Form.File.Input name="cardBackGroundImage" required onChange={this.inputCardBg} />
+                                    </Form.File>
+                                </Col>
+                            </Row>
+
+                            <Button variant='warning' type='submit' className='mt-5'>
+                                Submit
+                            </Button>
                         </Container>
                     </Jumbotron>
 
-
-                    <CKEditor
-                        editor={BalloonEditor}
-                        data={editorPremadeTemplate}
-                        onReady={editor => {
-                            console.log('Editor is ready to use!', editor);
-                            this.setState({
-                                content: editor.getData()
-                            });
-                        }}
-                        config={editorConfiguration}
-                        onChange={(event, editor) => {
-                            this.handleEditorChange(editor);
-                        }}
-                    />
-
-                    <Button variant='primary' type='submit'>
-                        Submit
-                    </Button>
-
+                    <div id='wikiContainer'>
+                        <CKEditor
+                            editor={BalloonEditor}
+                            data={editorPremadeTemplate}
+                            onReady={editor => {
+                                console.log('Editor is ready to use!', editor);
+                                this.setState({
+                                    content: editor.getData()
+                                });
+                            }}
+                            config={editorConfiguration}
+                            onChange={(event, editor) => {
+                                this.handleEditorChange(editor);
+                            }}
+                        />
+                    </div>
                 </Form>
             </>
         );

@@ -13,7 +13,7 @@ export default class Main extends Component {
     // Render
     render() {
         return (
-            <Jumbotron fluid>
+            <Jumbotron fluid className='header'>
                 <Container>
                     <h1>Account Verified Succesufully!</h1>
                 </Container>

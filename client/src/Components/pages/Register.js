@@ -188,6 +188,7 @@ export default class LogUser extends Component {
                 }
 
                 <Form
+                    className='header'
                     autoComplete='on'
                     onSubmit={this.requestHandler}
                     onReset={this.confirmReset}
@@ -195,7 +196,7 @@ export default class LogUser extends Component {
                 >
 
                     {/* Username */}
-                    <Row>
+                    <Row className='w-100'>
                         <Col md='6'>
                             <Form.Group controlId='userName'>
                                 <Form.Label>Username</Form.Label>
@@ -211,7 +212,7 @@ export default class LogUser extends Component {
                     </Row>
 
                     {/* Personal Data */}
-                    <Row>
+                    <Row className='w-100'>
                         {/* First Name */}
                         <Col md='6'>
                             <Form.Group controlId='firstName'>
@@ -242,7 +243,7 @@ export default class LogUser extends Component {
                     </Row>
 
                     {/* E-mail Data */}
-                    <Row>
+                    <Row className='w-100'>
                         <Col md='6'>
                             <Form.Group controlId='email'>
                                 <Form.Label>E-mail</Form.Label>
@@ -271,7 +272,7 @@ export default class LogUser extends Component {
                     </Row>
 
                     {/* Profile Picture */}
-                    <Row>
+                    <Row className='w-100'>
                         <Col md='6'>
                             <Form.File controlId='profilePicture'>
                                 <Form.File.Label>Profile Picture</Form.File.Label>
@@ -283,7 +284,7 @@ export default class LogUser extends Component {
                     </Row>
 
                     {/* Password Data */}
-                    <Row>
+                    <Row className='w-100'>
                         {/* Password */}
                         <Col md='6'>
                             <Form.Group controlId='password'>
@@ -313,7 +314,7 @@ export default class LogUser extends Component {
                         </Col>
                     </Row>
 
-                    <Row>
+                    <Row className='w-100'>
                         <Col md='1'>
                             <Button variant='primary' type='submit'>
                                 Submit

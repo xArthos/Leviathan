@@ -16,7 +16,8 @@
 }
 
 body {
-    background-image: linear-gradient(120deg, rgb(141, 109, 8) 0%, rgb(123, 29, 2) 100%);
+    /* background-image: linear-gradient(120deg, rgb(141, 109, 8) 0%, rgb(123, 29, 2) 100%); */
+
     color: black;
     /* font-family: "Poppins", sans-serif; */
     /* font-family: 'DotGothic16', sans-serif; */
@@ -31,19 +32,57 @@ h1, h2, h3, h4, h5, h6 {
     font-family: 'Cinzel', serif;
 }
 
+h2.topTitle {
+    color: white;
+}
+
+a {
+    color: rgb(255, 156, 86);
+}
+
+a:hover {
+    color: darkorange;
+}
+
+.navbar {
+	position: absolute;
+	width: 100%;
+    background: transparent;
+}
+
+.header {
+    padding-top: 200px;
+}
+
+
+
+
+
+
 
 #mainContainer {
     margin-left: 2rem;
     margin-right: 2rem;
-    padding: 2rem 0.5rem;
-    background-color: rgba(0, 0, 0, 0.281);
+    background-color: #000000bb;
 }
+
+#wikiContainer {
+    margin-right: auto;
+    margin-left: auto;
+    max-width: 1200px;
+    background-color: #000000c7;
+}
+
+
+
+
+
 
 
 /* Profile picture edit button position */
 .top-right {
-	top: 4%;
-	right: 9%;
+	top: 5%;
+	right: 26.5%;
 }
 
 /* CK Editor */
@@ -66,7 +105,7 @@ h1, h2, h3, h4, h5, h6 {
 
 /* Jumbotron */
 .jumbotron {
-    background: linear-gradient(0deg, #ff8c009f 0%, #8b0000a2 100%) !important;
+    background: linear-gradient(0deg, #ff8c00e8 0%, #8b0000e8 100%) !important;
 }
 
 
@@ -75,15 +114,20 @@ h1, h2, h3, h4, h5, h6 {
     border-bottom: 1px solid #000;
 }
 
+.nav-tabs .nav-item {
+	font-size: x-large;
+    font-family: 'Cinzel', serif;
+}
+
 .nav-tabs .nav-item a {
 	color: #aa5200;
 }
 
 .nav-tabs .nav-item.show .nav-link, .nav-tabs .nav-link.active {
-	color: #ffffff;
-	background: linear-gradient(0deg, #8b0000a2 0%, #dc143c91 100%);
+	color: #ff6600;
+	background: linear-gradient(0deg, #8b0000e8 0%, #dc143ce8 100%);
     border-style: solid;
-    border-image: linear-gradient(to bottom, #ff9100, rgba(0, 0, 0, 0)) 1 25%;
+    border-image: linear-gradient(to bottom, #ff9100, rgba(0, 0, 0, 0.20)) 1 25%;
 }
 
 .nav-tabs .nav-link:focus, .nav-tabs .nav-link:hover {
@@ -94,6 +138,10 @@ h1, h2, h3, h4, h5, h6 {
 
 
 /* Cards */
+.card {
+    background-color: #000000af;
+}
+
 .card, .card-img-overlay {
     margin-bottom: 15px !important;
 }
@@ -107,8 +155,10 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .card-img {
-    opacity: 0.6;
+    opacity: 1;
     object-fit: cover;
+    max-height: 250px;
+    min-height: 250px;
 }
 
 .card-title.h5 {
@@ -129,6 +179,7 @@ h1, h2, h3, h4, h5, h6 {
 
 #droppingArea:hover {
     background-color: rgba(138, 79, 40, 0.397);
+    cursor: pointer;
 }
 
 .square-dotted-box {
@@ -149,7 +200,36 @@ h1, h2, h3, h4, h5, h6 {
 /* Footer CSS */
 #footer {
     margin-bottom: 0 !important;
+    position: absolute;
+    bottom: 0;
+    height: 20rem;
+    width: 100%;
+    background: linear-gradient(0deg, #e28800e8 0%, #8b0000e8 100%);
 }
+
+
+
+
+
+
+
+
+
+#root {
+    position: relative;
+    min-height: 100vh;
+    padding-bottom: 23rem;
+}
+
+
+
+
+
+
+
+
+
+
 
 
 /* Sizing CSS */
@@ -157,10 +237,14 @@ h1, h2, h3, h4, h5, h6 {
     max-width: max-content;
 }
 
+.mw-100 {
+    max-width: 100% !important;
+}
+
 
 /* Profile Thumbnail image CSS */
 .img-thumbnail {
-    background: linear-gradient(120deg, rgb(255, 196, 0) 0%, rgb(255, 55, 0) 100%);
+    background: linear-gradient(120deg, #ffc400 0%, #ff3700 100%);
     border: 3px solid transparent;
     border-radius:15px;
     padding: 5px;
@@ -169,22 +253,48 @@ h1, h2, h3, h4, h5, h6 {
 	height: 250px;
 }
 
+
 /* Form CSS */
 .form-control {
 	background-color: transparent;
     border: none;
     color: #000000;
+    border-bottom: black 5px solid;
+    border-radius: 0;
 }
 
 .form-control:focus {
 	background-color: transparent;
     box-shadow: none;
     color: #1a1a1a;
+    border-color: #632700;
 }
 
 .form-control:disabled {
     background-color: transparent;
 }
+
+select::-ms-expand {
+    display: none !important;
+}
+
+select {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    text-indent: 1px;
+    text-overflow: '';
+    background: url("http://localhost:8010/style/selectArrow") 98% / 15px no-repeat;
+}
+
+option {
+    background-color: black;
+    color: white;
+}
+
+textarea {
+    border-bottom: none !important;
+}
+
 
 
 /* Profile Display Info */
@@ -194,4 +304,99 @@ h1, h2, h3, h4, h5, h6 {
 
 .profileDisplayPanel textarea {
     resize: none;
+}
+
+
+/** Fixed Navbar */
+.navbar_fixed {
+    position: fixed;
+    width: 100%;
+    top: -70px;
+    left: 0;
+    right: 0;
+    background: linear-gradient(180deg, #c96b00 0%, #af0000 80%, transparent 100%);
+    transform: translateY(70px);
+    transition: transform 1s ease, background 1s ease;
+    -webkit-transition: transform 1s ease, background 1s ease;
+    z-index: 1;
+}
+
+.navbar_fixed .navbar .nav .nav-item .nav-link {
+    line-height: 70px
+}
+
+.navbar_fixed .navbar .nav .nav-item .nav-link {
+    color: #4e1f00;
+}
+
+.navbar_fixed .navbar .nav .nav-item:hover .nav-link,
+.navbar_fixed .navbar .nav .nav-item.active .nav-link {
+    color: #ac0042;
+}
+
+.navbar_fixed .navbar .nav .nav-item.submenu:hover ul .nav-item .nav-link,
+.navbar_fixed .navbar .nav .nav-item.submenu ul .nav-item .nav-link {
+    color: #4d0529;
+}
+
+.navbar_fixed .navbar .nav .nav-item.submenu ul .nav-item .nav-link:hover {
+    color: #ffffff;
+}
+
+
+/** #Main: Scrollbar */
+* {
+    scrollbar-color: #e68413 rgb(0, 0, 0);
+    scrollbar-width: thin;
+}
+
+::-webkit-scrollbar {
+    width: 10px;
+}
+
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+    background: -webkit-linear-gradient(0deg, #e68413 0%, #ed2360 100%);
+    background: -moz-linear-gradient(0deg, #e68413 0%, #ed2360 100%);
+    background: -o-linear-gradient(0deg, #e68413 0%, #ed2360 100%);
+    background: linear-gradient(0deg, #e68413 0%, #ed2360 100%);
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: -webkit-linear-gradient(180deg, #e68413 0%, #ed2360 100%);
+    background: -moz-linear-gradient(180deg, #e68413 0%, #ed2360 100%);
+    background: -o-linear-gradient(180deg, #e68413 0%, #ed2360 100%);
+    background: linear-gradient(180deg, #e68413 0%, #ed2360 100%);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.list-group-item {
+	position: relative;
+	display: block;
+	padding: .75rem 1.25rem;
+	background-color: transparent;
+	border: none;
+    font-size: large;
+}
+
+.list-group {
+    background: linear-gradient(0deg, #8b0000e8 0%, #e28800e8 100%);
 }

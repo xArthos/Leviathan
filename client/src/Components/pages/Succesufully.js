@@ -27,7 +27,7 @@ export default class Succesufully extends Component {
     // Render
     render() {
         return (
-            <Jumbotron fluid>
+            <Jumbotron fluid className='header'>
                 <Container>
                     <h1>{this.state.message}</h1>
                 </Container>

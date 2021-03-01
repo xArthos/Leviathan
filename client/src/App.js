@@ -42,25 +42,23 @@ const App = () => {
       <MainNavBar />
 
       {/* Main */}
-      <div id='mainContainer'>
-        <Switch>
-          <Route path='/' exact component={Main} />
-          <Route path='/login' component={LogUser} />
-          <Route path='/allUsersList' component={Users} />
-          <Route path='/wikis' component={Wikis} />
-          <Route path='/register' component={Register} />
-          <Route path='/success' component={Succesufully} />
-          <Route path='/unauthorized' component={ErrorPage} />
-          <Route path='/profile::userName' exact component={Profile} />
-          <Route path='/profile::userName/edit' exact component={ProfileEditInfo} />
-          <Route path='/profile::userName/newWikiPage/:newWikiPageId' exact component={NewWikiPage} />
-          <Route path='/wiki/:WikiPageId' exact component={WikiPage} />
+      <Switch>
+        <Route path='/' exact component={Main} />
+        <Route path='/login' component={LogUser} />
+        <Route path='/allUsersList' component={Users} />
+        <Route path='/wikis' component={Wikis} />
+        <Route path='/register' component={Register} />
+        <Route path='/success' component={Succesufully} />
+        <Route path='/unauthorized' component={ErrorPage} />
+        <Route path='/profile::userName' exact component={Profile} />
+        <Route path='/profile::userName/edit' exact component={ProfileEditInfo} />
+        <Route path='/profile::userName/newWikiPage/:newWikiPageId' exact component={NewWikiPage} />
+        <Route path='/wiki/:WikiPageId' exact component={WikiPage} />
 
 
-          {/* 404 Page */}
-          <Route path='*' component={() => <ErrorPage message={'404 Not Found'} />} />
-        </Switch>
-      </div>
+        {/* 404 Page */}
+        <Route path='*' component={() => <ErrorPage message={'404 Not Found'} />} />
+      </Switch>
 
       {/* Footer */}
       <Footer />

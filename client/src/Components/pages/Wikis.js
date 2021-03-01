@@ -1,5 +1,5 @@
 // Modules
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Table, Container } from 'react-bootstrap';
 import { Link } from "react-router-dom";
 import axios from 'axios';
@@ -25,29 +25,27 @@ const Wikis = () => {
 
     // Set URL
     const wikisUrl = 'http://localhost:8010/allWikisList';
-    const [wikis, setWikis] = useState([])
+    const [wikis, setWikis] = useState([]);
+    const variable = 'Wiki';
 
     // APIs
     // All Wikis
-    const fetchWikis = () => axios.get(wikisUrl).then(res => setWikis(res.data));
-    fetchWikis()
-    console.log(wikis)
+    // const fetchWikis = () => axios.get(wikisUrl).then(res => setWikis(res.data));
+    // fetchWikis()
+    // console.log(wikis)
 
-        // // Call once the user from the DB
-    // useEffect(() => {
-    //     axios.get('http://localhost:8010/allUsersList')
-    //         .then((res) => {
-    //             let user = res.data.filter(user => user.userName === userName);
-    //             requestedUser.current = user[0];
-    //             document.getElementById('test').value = requestedUser.current.about;
-    //             console.log('called')
-    //         })
-    //         .catch((err) => console.log(err));
-    // }, [userName]);
+        // Call once the user from the DB
+    useEffect(() => {
+        axios.get(wikisUrl)
+            .then((res) => {
+                setWikis(wikis = res)
+            })
+            .catch((err) => console.log(err));
+    }, [variable]);
 
     // Component Return
     return (
-        <Container>
+        <Container className='header'>
             <h1>Wikis: </h1>
             <Table striped bordered hover>
                 <thead>

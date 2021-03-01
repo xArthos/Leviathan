@@ -108,11 +108,38 @@ export const userWikiPages = async (req, res) => {
     const { userName } = req.params;
     // console.log(userName);
 
-    User.findOne({userName: userName}).populate('wikiPagesMade').exec((err, data) => {
+    User.findOne({ userName: userName }).populate('wikiPagesMade').exec((err, data) => {
         // console.log(data)
         res.status(200).send({
             numberOfWikis: data.wikiPagesMade.length,
             wikis: data.wikiPagesMade
         });
+    });
+};
+
+export const formSelectArrowIcon = async (req, res) => {
+    // Destination of the file
+    const dir = `${process.cwd()}/public/images/form`;
+    const file = fs.readFileSync(`${dir}/arrow.png`);
+    res.status(200).send(file);
+};
+
+export const lastPublishedWikisList = async (req, res) => {
+    WikiPage.find({'published': true}).sort({"createdAt": 1}).limit(3).then(item => {
+        res.status(200).send(item);
+    });
+};
+
+export const wikiPageCardBackground = async (req, res) => {
+
+    const { wikiId, picExtension } = req.params;
+
+    WikiPage.findById(wikiId).populate('author', '_id').exec().then((data) => {
+        const userId = data.author._id;
+
+        // Destination of the file
+        const dir = `${process.cwd()}/public/images/wikis/${userId}/${wikiId}`;
+        const file = fs.readFileSync(`${dir}/card-bg.${picExtension}`);
+        res.status(200).send(file);
     });
 };

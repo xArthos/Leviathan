@@ -12,7 +12,7 @@ export default class Footer extends Component {
 
     render() {
         return (
-            <Card id='footer' className='text-center' bg='dark' text='white'>
+            <Card id='footer' className='text-center mt-5' bg='dark' text='white'>
                 <Card.Header>Featured</Card.Header>
                 <Card.Body>
                     <Card.Title>Special title treatment</Card.Title>
