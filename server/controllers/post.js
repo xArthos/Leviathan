@@ -9,8 +9,6 @@ import path from 'path';
 // Models
 import User from '../model/User.js';
 import WikiPage from '../model/WikiPage.js';
-import { title } from 'process';
-import { type } from 'os';
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -189,7 +187,7 @@ export const login = async (req, res) => {
 export const signUp = async (req, res) => {
 
     // Destructuring important datas
-    const { email, password, userName, firstName, lastName } = JSON.parse(req.body.body);
+    const { email, password, userName, firstName, lastName } = JSON.parse(req.body.userData);
 
     try {
 
@@ -208,6 +206,7 @@ export const signUp = async (req, res) => {
         // * Create New User
 
         let newUser;
+        const profilePicUrl = `http://localhost:8010/${userName}/profilePicture`
         if (!req.file) {
             newUser = new User({
                 userName: userName,
@@ -228,9 +227,10 @@ export const signUp = async (req, res) => {
                 },
                 email: email,
                 password: hashedPassword,
-                profilePicture: req.file
+                profilePicture: profilePicUrl
             });
         };
+        console.log(newUser)
 
         // * Save New User in DB
         newUser.save();
@@ -334,10 +334,9 @@ export const updateAbout = async (req, res) => {
             }
             else {
                 User.findOne({ userName: oldUserData.userName }, (err, user) => {
-                    console.log(user)
                     // Positive Response
                     res.status(200).send({
-                        message: 'About successfully changed',
+                        message: 'Changments have been saved!',
                         userUpdated: {
                             user: user,
                             //! To Improve
@@ -477,7 +476,7 @@ export const deleteWiki = async (req, res) => {
 export const validateUserInformations = (req, res, next) => {
 
     // Take the data from FrontEnd
-    const body = JSON.parse(req.body.body)
+    const body = JSON.parse(req.body.userData)
 
     // Validation of the datas
     const { error } = registerValidation(body);
@@ -491,7 +490,7 @@ export const validateUserInformations = (req, res, next) => {
 export const checkExitEmail = (req, res, next) => {
 
     // Take the data from FrontEnd
-    const { email } = JSON.parse(req.body.body);
+    const { email } = JSON.parse(req.body.userData);
 
     // Check if the e-mail is aleady registred in the DB
     try {
@@ -514,7 +513,7 @@ export const checkExitEmail = (req, res, next) => {
 export const checkExitUsername = (req, res, next) => {
 
     // Take the data from FrontEnd
-    const { userName } = JSON.parse(req.body.body);
+    const { userName } = JSON.parse(req.body.userData);
 
     // Check if the username is aleady registred in the DB
     try {

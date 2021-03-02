@@ -16,7 +16,8 @@ import {
     userWikiPages,
     formSelectArrowIcon,
     lastPublishedWikisList,
-    wikiPageCardBackground
+    wikiPageCardBackground,
+    lastPublishedGalleriesList
 } from '../controllers/get.js'
 
 import {
@@ -41,8 +42,8 @@ import {
 // Setting the router
 const router = express.Router();
 
-// Setting the favicon
-const favicon = fs.readFileSync(`${process.cwd()}/public/images/ico/favicon.ico`);
+// // Setting the favicon
+// const favicon = fs.readFileSync(`${process.cwd()}/public/images/ico/favicon.ico`);
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -54,10 +55,10 @@ const storageProfilePic = multer.diskStorage({
     destination: (req, file, cb) => {
 
         // User infos
-        const user = JSON.parse(JSON.stringify(req.body));
+        const { newUser } = req.params;
 
         // Destination of the file
-        const dir = `${process.cwd()}/public/images/profilePicture/${user.userName}/temp`;
+        const dir = `${process.cwd()}/public/images/profilePicture/${newUser}/temp`;
 
         // Create a new folder if it doesn't exit
         if (!fs.existsSync(dir)) {
@@ -148,11 +149,12 @@ router.get('/img/bg/:wikiId/:picExtension', wikiPageCardBackground);
 router.get('/wiki/:wikiId', wikiPagePublished);
 router.get('/style/selectArrow', formSelectArrowIcon);
 router.get('/lastPublishedWikis', lastPublishedWikisList);
+router.get('/lastPublishedGalleries', lastPublishedGalleriesList);
 
 
 // POST
 router.post('/login', login);
-router.post('/register', uploadProfilePic.single('profilePicture'), validateUserInformations, checkExitEmail, checkExitUsername, signUp);
+router.post('/:newUser/register', uploadProfilePic.single('profilePicture'), validateUserInformations, checkExitEmail, checkExitUsername, signUp);
 
 router.post('/profile::userName/edit/newProfilePicUpload', uploadProfilePic.single('editProfilePicture'), newProfilePicUpload);
 router.post('/profile::userName/edit/about', updateAbout);

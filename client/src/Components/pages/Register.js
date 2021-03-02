@@ -1,7 +1,7 @@
 // Modules
 import { Component } from 'react';
 import axios from 'axios';
-import { Form, Button, Alert, Row, Col } from 'react-bootstrap';
+import { Form, Button, Alert, Row, Col, Jumbotron, Image } from 'react-bootstrap';
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////
@@ -81,7 +81,6 @@ export default class LogUser extends Component {
     requestHandler = (event) => {
         event.preventDefault();
 
-        console.log(this.state);
         // console.log(event.target.email.value);
         const newUser = {
             userName: this.state.userName,
@@ -95,7 +94,7 @@ export default class LogUser extends Component {
 
         const formData = new FormData();
         formData.append('profilePicture', this.state.profilePicture);
-        formData.append('body', JSON.stringify(newUser));
+        formData.append('userData', JSON.stringify(newUser));
         console.log(formData.entries());
 
         const config = {
@@ -104,7 +103,7 @@ export default class LogUser extends Component {
             }
         };
 
-        axios.post('http://localhost:8010/register', formData, config)
+        axios.post(`http://localhost:8010/${newUser.userName}/register`, formData, config)
             .then((result) => {
 
                 console.log(result);
@@ -179,155 +178,158 @@ export default class LogUser extends Component {
     render() {
         return (
             <>
-                {   this.state.message ?
-                    <Alert variant='danger' onClick={this.eraseAlert} dismissible>
-                        {/* <div dangerouslySetInnerHTML={{ __html: this.state.message }} /> */}
-                        {this.state.message}
-                    </Alert> :
-                    null
-                }
+                <Jumbotron fluid className='header' />
+                <div id='registerPanel' className='my-5 mx-auto'>
+                    <div id='registerPanelContainer'>
+                        <div className='text-center mt-5'>
+                            <Image src="/images/leviatahan_logo_s.png" className="d-inline-block" alt="Leviathan logo" />
+                            <h1 className='my-3'>Join the Leviathan Community!</h1>
+                        </div>
 
-                <Form
-                    className='header'
-                    autoComplete='on'
-                    onSubmit={this.requestHandler}
-                    onReset={this.confirmReset}
-                    ref={form => this.form = form}
-                >
+                        <Form
+                        className='p-5'
+                            autoComplete='on'
+                            onSubmit={this.requestHandler}
+                            onReset={this.confirmReset}
+                            ref={form => this.form = form}
+                        >
 
-                    {/* Username */}
-                    <Row className='w-100'>
-                        <Col md='6'>
-                            <Form.Group controlId='userName'>
-                                <Form.Label>Username</Form.Label>
-                                <Form.Control
-                                    type='text'
-                                    placeholder='Write your username'
-                                    name='userName'
-                                    value={this.state.userName}
-                                    required
-                                    onChange={this.inputChange} />
-                            </Form.Group>
-                        </Col>
-                    </Row>
+                            {/* Username */}
+                            <Row className='w-100'>
+                                <Col md='6'>
+                                    <Form.Group controlId='userName'>
+                                        <Form.Control
+                                            type='text'
+                                            placeholder='Write your username'
+                                            name='userName'
+                                            value={this.state.userName}
+                                            required
+                                            onChange={this.inputChange} />
+                                    </Form.Group>
+                                </Col>
+                            </Row>
 
-                    {/* Personal Data */}
-                    <Row className='w-100'>
-                        {/* First Name */}
-                        <Col md='6'>
-                            <Form.Group controlId='firstName'>
-                                <Form.Label>First Name</Form.Label>
-                                <Form.Control
-                                    type='text'
-                                    placeholder='Write your First Name'
-                                    name='firstName'
-                                    value={this.state.firstName}
-                                    required
-                                    onChange={this.inputChange} />
-                            </Form.Group>
-                        </Col>
+                            {/* Personal Data */}
+                            <Row className='w-100'>
+                                {/* First Name */}
+                                <Col md='6'>
+                                    <Form.Group controlId='firstName'>
+                                        <Form.Control
+                                            type='text'
+                                            placeholder='First Name'
+                                            name='firstName'
+                                            value={this.state.firstName}
+                                            required
+                                            onChange={this.inputChange} />
+                                    </Form.Group>
+                                </Col>
 
-                        {/* Last Nime */}
-                        <Col md='6'>
-                            <Form.Group controlId='lastName'>
-                                <Form.Label>Last Name</Form.Label>
-                                <Form.Control
-                                    type='text'
-                                    placeholder='Write your Last Name'
-                                    name='lastName'
-                                    value={this.state.lastName}
-                                    required
-                                    onChange={this.inputChange} />
-                            </Form.Group>
-                        </Col>
-                    </Row>
+                                {/* Last Nime */}
+                                <Col md='6'>
+                                    <Form.Group controlId='lastName'>
+                                        <Form.Control
+                                            type='text'
+                                            placeholder='Last Name'
+                                            name='lastName'
+                                            value={this.state.lastName}
+                                            required
+                                            onChange={this.inputChange} />
+                                    </Form.Group>
+                                </Col>
+                            </Row>
 
-                    {/* E-mail Data */}
-                    <Row className='w-100'>
-                        <Col md='6'>
-                            <Form.Group controlId='email'>
-                                <Form.Label>E-mail</Form.Label>
-                                <Form.Control
-                                    type='email'
-                                    placeholder='example@mail.com'
-                                    name='email'
-                                    value={this.state.email}
-                                    required
-                                    onChange={this.inputChange} />
-                            </Form.Group>
-                        </Col>
+                            {/* E-mail Data */}
+                            <Row className='w-100'>
+                                <Col md='6'>
+                                    <Form.Group controlId='email'>
+                                        <Form.Control
+                                            type='email'
+                                            placeholder='Write Your E-Mail'
+                                            name='email'
+                                            value={this.state.email}
+                                            required
+                                            onChange={this.inputChange} />
+                                    </Form.Group>
+                                </Col>
 
-                        <Col md='6'>
-                            <Form.Group controlId='confirmEmail'>
-                                <Form.Label>Confirm E-mail</Form.Label>
-                                <Form.Control
-                                    type='email'
-                                    placeholder='example@mail.com'
-                                    name='confirmEmail'
-                                    value={this.state.confirmEmail}
-                                    required
-                                    onChange={this.inputChange} />
-                            </Form.Group>
-                        </Col>
-                    </Row>
+                                <Col md='6'>
+                                    <Form.Group controlId='confirmEmail'>
+                                        <Form.Control
+                                            type='email'
+                                            placeholder='Confirm Your E-Mail'
+                                            name='confirmEmail'
+                                            value={this.state.confirmEmail}
+                                            required
+                                            onChange={this.inputChange} />
+                                    </Form.Group>
+                                </Col>
+                            </Row>
 
-                    {/* Profile Picture */}
-                    <Row className='w-100'>
-                        <Col md='6'>
-                            <Form.File controlId='profilePicture'>
-                                <Form.File.Label>Profile Picture</Form.File.Label>
-                                <Form.File.Input
-                                    name='profilePicture'
-                                    onChange={this.inputFileChange} />
-                            </Form.File>
-                        </Col>
-                    </Row>
+                            {/* Profile Picture */}
+                            <Row className='w-100 pb-4'>
+                                <Col md='6'>
+                                    <Form.File controlId='profilePicture'>
+                                        <Form.Label className='text-white'>Profile Picture</Form.Label>
+                                        <Form.File.Input
+                                            name='profilePicture'
+                                            onChange={this.inputFileChange} />
+                                    </Form.File>
+                                </Col>
+                            </Row>
 
-                    {/* Password Data */}
-                    <Row className='w-100'>
-                        {/* Password */}
-                        <Col md='6'>
-                            <Form.Group controlId='password'>
-                                <Form.Label>Password</Form.Label>
-                                <Form.Control
-                                    type='password'
-                                    placeholder='Write your password'
-                                    name='password'
-                                    value={this.state.password}
-                                    required
-                                    onChange={this.inputChange} />
-                            </Form.Group>
-                        </Col>
+                            {/* Password Data */}
+                            <Row className='w-100'>
+                                {/* Password */}
+                                <Col md='6'>
+                                    <Form.Group controlId='password'>
+                                        <Form.Control
+                                            type='password'
+                                            placeholder='Write your password'
+                                            name='password'
+                                            value={this.state.password}
+                                            required
+                                            onChange={this.inputChange} />
+                                    </Form.Group>
+                                </Col>
 
-                        {/* Confirm Password */}
-                        <Col md='6'>
-                            <Form.Group controlId='passwordConfirmation'>
-                                <Form.Label>Confirm Password</Form.Label>
-                                <Form.Control
-                                    type='password'
-                                    placeholder='Re-type your password'
-                                    name='passwordConfirmation'
-                                    value={this.state.passwordConfirmation}
-                                    required
-                                    onChange={this.inputChange} />
-                            </Form.Group>
-                        </Col>
-                    </Row>
+                                {/* Confirm Password */}
+                                <Col md='6'>
+                                    <Form.Group controlId='passwordConfirmation'>
+                                        <Form.Control
+                                            type='password'
+                                            placeholder='Re-type your password'
+                                            name='passwordConfirmation'
+                                            value={this.state.passwordConfirmation}
+                                            required
+                                            onChange={this.inputChange} />
+                                    </Form.Group>
+                                </Col>
+                            </Row>
 
-                    <Row className='w-100'>
-                        <Col md='1'>
-                            <Button variant='primary' type='submit'>
-                                Submit
-                            </Button>
-                        </Col>
-                        <Col md='1'>
-                            <Button variant='danger' type='reset'>
-                                Reset
-                            </Button>
-                        </Col>
-                    </Row>
+                            <Row className='w-100'>
+                                <Col md='1'>
+                                    <Button variant='warning' type='submit'>
+                                        Submit
+                                    </Button>
+                                </Col>
+                                <Col md='1'>
+                                    <Button variant='danger' type='reset'>
+                                        Reset
+                                    </Button>
+                                </Col>
+                            </Row>
 
-                </Form>
+                        </Form>
+
+                        {this.state.message ?
+                            <Alert variant='danger' onClick={this.eraseAlert} dismissible>
+                                {/* <div dangerouslySetInnerHTML={{ __html: this.state.message }} /> */}
+                                {this.state.message}
+                            </Alert> :
+                            null
+                        }
+                    </div>
+                </div>
             </>
         );
     };

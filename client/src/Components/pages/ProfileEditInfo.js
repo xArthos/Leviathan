@@ -44,20 +44,14 @@ const About = (props) => {
         clearTimeout(typingTimer);
         if (input) {
             setTypingTimer(typingTimer = setTimeout(doneTyping, 1000));
-        }
+        };
 
-        // clearTimeout(typingTimer);
-        // setTypingTimer(setTimeout(doneTyping, 1000));
-
-        // // Create da object to send to the server
-        // console.log(input)
         const data = {
             data: input,
             user: props.user
-        }
-        // console.log(data)
+        };
 
-        //user is "finished typing," do something
+        // Send changements to server when user finishes to type
         function doneTyping() {
             console.log(data)
             axios.post(aboutUpdateUrl, data)
@@ -65,11 +59,11 @@ const About = (props) => {
                     setSuccessMessage(successMessage = res.data.message);
                     localStorage.setItem('Leviathan', JSON.stringify(res.data.userUpdated));
 
-                    const { user, accessToken, refreshToken } = res.data.userUpdated
+                    const { user, accessToken, refreshToken } = res.data.userUpdated;
                     props.handler(user, accessToken, refreshToken);
                 })
-                .catch((err) => { setFailMessage(failMessage = err.data.message) })
-        }
+                .catch((err) => { setFailMessage(failMessage = err.data.message) });
+        };
     };
 
     // Reset the timer after user stopped tyiping
@@ -82,18 +76,18 @@ const About = (props) => {
     return (
         <Jumbotron fluid className='profileDisplayPanel'>
             <Container>
-                <div>
+                <div className='d-flex justify-content-between'>
                     <h2>About</h2>
                     {
                         successMessage !== null ?
-                            <Alert variant='success' className='position-absolute top-right'>
+                            <Alert variant='success' className='m-0'>
                                 {successMessage}
                             </Alert> :
                             null
                     }
                     {
                         failMessage !== null ?
-                            <Alert variant='danger' className='position-absolute top-right'>
+                            <Alert variant='danger' className='m-0'>
                                 {failMessage}
                             </Alert> :
                             null
@@ -272,7 +266,7 @@ const PersonalArea = () => {
                     {renderElement}
                 </Col>
                 <Col md='4' className='d-flex justify-content-end'>
-                    <Button onClick={() => changeEditMode(fParam, sParam)}>Edit</Button>
+                    <Button variant='warning' onClick={() => changeEditMode(fParam, sParam)}>Edit</Button>
                 </Col>
             </>
         );

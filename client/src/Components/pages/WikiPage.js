@@ -1,6 +1,7 @@
 // Modules
 import React, { Component } from 'react';
 import axios from 'axios';
+import { Image, Jumbotron } from 'react-bootstrap';
 import { CKEditor } from '@ckeditor/ckeditor5-react';
 import BalloonEditor from "@ckeditor/ckeditor5-build-balloon-block";
 import { Container } from 'react-bootstrap';
@@ -24,6 +25,7 @@ export default class NewWikiPage extends Component {
 
             // WikiId
             wikiId: this.props.match.params.WikiPageId,
+            author: '',
 
             // Contnet
             content: ''
@@ -81,13 +83,24 @@ export default class NewWikiPage extends Component {
 
         return (
             <>
-            <Container className='header'>
-                <CKEditor
-                    disabled
-                    editor={BalloonEditor}
-                    data={`${this.state.content}`}
-                />
-            </Container>
+                <Jumbotron fluid className='header' />
+                <Container id='wikiReadContainer'>
+                    <CKEditor
+                        disabled
+                        editor={BalloonEditor}
+                        data={`${this.state.content}`}
+                    />
+
+                    <hr className='my-5' />
+
+                    <div className='d-flex p-5'>
+                        <Image className='wiki-author-img' src={this.state.profilePicUrl} roundedCircle />
+                        <div id='wikiPageAuthorLabel'>
+                            Posted By: <a href={`http://localhost:3000/profile:${this.state.author}`}>{this.state.author}</a>
+                        </div>
+                    </div>
+
+                </Container>
             </>
         );
     }

@@ -1,7 +1,7 @@
 // Modules
 import { Component } from 'react';
 import axios from 'axios';
-import { Form, Button, Alert } from 'react-bootstrap';
+import { Form, Button, Alert, Jumbotron, Image } from 'react-bootstrap';
 
 
 
@@ -96,30 +96,37 @@ export default class Login extends Component {
     render() {
         return (
             <>
-                <Form onSubmit={this.loginRequest} className='header'>
-                    {this.state.message ?
-                        <Alert variant='danger'>
-                            {this.state.message}
-                        </Alert> :
-                        null
-                    }
-                    <Form.Group controlId='email'>
-                        <Form.Label>Email address</Form.Label>
-                        <Form.Control type='email' placeholder='Enter email' name='email' />
-                        <Form.Text className='text-muted'>
-                            We'll never share your email with anyone else.
-                    </Form.Text>
-                    </Form.Group>
+                <Jumbotron fluid className='header' />
+                <div id='loginPanel' className='my-5 mx-auto'>
+                    <div id='loginFormContainer'>
+                        <div className='text-center mt-5'>
+                            <Image src="/images/leviatahan_logo_s.png" className="d-inline-block" alt="Leviathan logo" />
+                            <h1 className='my-3'>Welcome to Leviathan!</h1>
+                        </div>
 
-                    <Form.Group controlId='password'>
-                        <Form.Label>Password</Form.Label>
-                        <Form.Control type='password' placeholder='Password' name='password' />
-                    </Form.Group>
+                        <Form onSubmit={this.loginRequest} className='p-3 text-center'>
+                            <Form.Group className='mt-2' controlId='email'>
+                                <Form.Control type='email' placeholder='Enter email' name='email' />
+                            </Form.Group>
 
-                    <Button variant='primary' type='submit'>
-                        Submit
-                    </Button>
-                </Form>
+                            <Form.Group className='mt-5' controlId='password'>
+                                <Form.Control type='password' placeholder='Password' name='password' />
+                            </Form.Group>
+
+                            <Button variant='warning' type='submit' className='mt-2'>
+                                Submit
+                            </Button>
+                        </Form>
+
+                        {this.state.message ?
+                            <Alert variant='danger' className='m-5'>
+                                {this.state.message}
+                            </Alert> :
+                            null
+                        }
+                    </div>
+                    <Image className='w-100' src="images/login-bg.jpg" />
+                </div>
             </>
         );
     };

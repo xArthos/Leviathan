@@ -36,16 +36,7 @@ const userSchema = mongoose.Schema({
         min: 6,
         max: 1024
     },
-    profilePicture: {
-        fieldname: String,
-        originalname: String,
-        encoding: String,
-        mimetype: String,
-        destination: String,
-        filename: String,
-        path: String,
-        size: Number
-    },
+    profilePicture: { type: String },
     wikiPagesMade: [{ type: mongoose.Schema.ObjectId, ref: 'WikiPage' }],
     about: { type: String, default: null },
     active: { type: Boolean, default: false }

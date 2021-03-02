@@ -387,7 +387,6 @@ export default class NewWikiPage extends Component {
 
         return (
             <>
-
                 <Form
                     autoComplete="off"
                     onSubmit={this.requestHandler}
@@ -397,7 +396,10 @@ export default class NewWikiPage extends Component {
                     <Jumbotron fluid className='header'>
                         <Container>
                             <h2>New Wikipage settings</h2>
+
                             <hr />
+
+                            {/* Title */}
                             <Row>
                                 <Col md="6">
                                     <Form.Group controlId="tile">
@@ -412,6 +414,7 @@ export default class NewWikiPage extends Component {
                                 </Col>
                             </Row>
 
+                            {/* Game Serie */}
                             <Row>
                                 <Col md="6">
                                     <Form.Group controlId="gameSerie" className='selectdiv'>
@@ -425,11 +428,13 @@ export default class NewWikiPage extends Component {
                                             <option value="The Witcher">The Witcher</option>
                                             <option value="The Elder Scrolls">The Elder Scrolls</option>
                                             <option value="Assassin's Creed">Assassin"s Creed</option>
+                                            <option value="Gran Turismo">Gran Turismo</option>
                                         </Form.Control>
                                     </Form.Group>
                                 </Col>
                             </Row>
 
+                            {/* Type of Page, Genre, Relation */}
                             <Row>
                                 <Col md="4">
                                     <Form.Group controlId="type">
@@ -477,10 +482,11 @@ export default class NewWikiPage extends Component {
                                 </Col>
                             </Row>
 
+                            {/* Card Background */}
                             <Row>
                                 <Col md="12">
                                     <Form.File controlId="cardBackGroundImage">
-                                        <Form.File.Label>Type of page</Form.File.Label>
+                                        <Form.File.Label>Card Background</Form.File.Label>
                                         <Form.File.Input name="cardBackGroundImage" required onChange={this.inputCardBg} />
                                     </Form.File>
                                 </Col>

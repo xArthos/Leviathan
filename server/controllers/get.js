@@ -1,6 +1,7 @@
 // Modules
 import fs from 'fs';
 import jwt from 'jsonwebtoken';
+import path from 'path';
 
 // Models
 import User from '../model/User.js';
@@ -42,13 +43,23 @@ export const authenticate = async (req, res) => {
         jwt.verify(token, process.env.JWT_SECRET_KEY, (err, decoded) => {
             if (err) return res.send(400).send('Something went wrong');
 
-            const { email } = JSON.parse(decoded.body);
-            // console.log(JSON.parse(decoded.body));
+            const { email } = JSON.parse(decoded.userData);
 
             User.findOneAndUpdate({ email: email }, { active: true }, (err, data) => {
                 if (err) return res.send(400).send('Something went wrong');
 
-                console.log(data)
+                // File Paths
+                const currentPath = path.join(process.cwd(), "public", 'images', 'profilePicture', data.userName, 'temp', "profile.jpg");
+                const destinationPath = path.join(process.cwd(), "public", 'images', 'profilePicture', data.userName, "profile.jpg");
+
+                // Switching file's path function
+                fs.rename(currentPath, destinationPath, function (err) {
+                    if (err) {
+                        throw err
+                    } else {
+                        console.log("Successfully moved the file!");
+                    };
+                });
             });
 
             res.status(200).redirect('http://localhost:3000/login');
@@ -96,9 +107,11 @@ export const wikiPagePublished = async (req, res) => {
     // console.log('---------------- GET Picture Test --------------------');
     const { wikiId } = req.params;
 
-    WikiPage.findById(wikiId).populate('author', '_id').exec().then((data) => {
+    WikiPage.findById(wikiId).populate('author', '_id userName profilePicture').exec().then((data) => {
         res.status(200).send({
-            content: data.content
+            content: data.content,
+            author: data.author.userName,
+            profilePicUrl: data.author.profilePicture
         });
     });
 };
@@ -125,7 +138,13 @@ export const formSelectArrowIcon = async (req, res) => {
 };
 
 export const lastPublishedWikisList = async (req, res) => {
-    WikiPage.find({'published': true}).sort({"createdAt": 1}).limit(3).then(item => {
+    WikiPage.find({ 'published': true }).sort({ "createdAt": -1 }).limit(3).then(item => {
+        res.status(200).send(item);
+    });
+};
+
+export const lastPublishedGalleriesList = async (req, res) => {
+    WikiPage.find({ 'type': 'Gallery' }).populate('author', 'userName').sort({ "createdAt": 1 }).limit(3).then(item => {
         res.status(200).send(item);
     });
 };

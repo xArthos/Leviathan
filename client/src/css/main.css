@@ -1,14 +1,54 @@
+/*
+*    Index CSS
+/***********************
+? 44: # Main Settings
+*   - 45: Font Import
+*   - 51: General
+*   - 79: Scrollbar
+*   - 107: Anchor
+*   - 118: Spacing
+*   - 123: Sizing
+*   - 152: Containers
+*   - 161: Jumbotron
+*   - 155: Backgrounds
+? 168: # Navbar
+*   - 181: Fixed Navbar
+*   - 217: Navbar-dark Custom Bootstrap CSS
+!   # 229: Navbar Elements
+*       - 230: Navbar register button
+*       - 237: Navbar Dropdown Menu
+? 261: Login-Register Panels
+? 296: # CK Editor
+!   # 313: Ck Editor Elements
+*       - 314: Ck Editor Table
+? 328: # Nav Tabs
+? 362: # Cards
+? 418: # Profile
+*   - 419: Navtab Content
+!   # 428: Profile Elements
+*       - 429: User's Profile image
+*       - 458: Profile Wiki Cards Delete Button
+*       - 468: Profile Picture Edit Button Position
+? 481: Dropping Image Area
+? 512: Form
+! 569: Homepage Elements
+*   - 570: Photo Gallery Card
+*   - 576: Rank Card
+! 592: Other Theme Elements
+*   - 593: ListGroup
+*   - 609: Alert
+? 629: Footer
+/************************************************/
+
+
+/*? # Main Settings */
+/* #Main: Font Import  */
 @import url('https://fonts.googleapis.com/css2?family=DotGothic16&display=swap');
-
-/* @import url('https://fonts.googleapis.com/css2?family=Cinzel&display=swap'); */
 @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@600&display=swap');
-
-@import url('https://fonts.googleapis.com/css2?family=Orbitron&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Baloo+Chettan+2&display=swap');
-
 @import url('https://fonts.googleapis.com/css2?family=Cherry+Swash&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Audiowide&display=swap');
 
+/* #Main: General */
 * {
     margin: 0;
     padding: 0;
@@ -16,204 +56,19 @@
 }
 
 body {
-    /* background-image: linear-gradient(120deg, rgb(141, 109, 8) 0%, rgb(123, 29, 2) 100%); */
-
-    color: black;
-    /* font-family: "Poppins", sans-serif; */
-    /* font-family: 'DotGothic16', sans-serif; */
-    /* font-family: 'Orbitron', sans-serif; */
-    /* font-family: 'Press Start 2P', cursive; */
-    /* font-family: 'Baloo Chettan 2', cursive; */
     font-family: 'Cherry Swash', cursive;
     min-height: 100vh;
 }
 
 h1, h2, h3, h4, h5, h6 {
     font-family: 'Cinzel', serif;
+    color: #ffffff;
+    text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
 }
 
 h2.topTitle {
     color: white;
 }
-
-a {
-    color: rgb(255, 156, 86);
-}
-
-a:hover {
-    color: darkorange;
-}
-
-.navbar {
-	position: absolute;
-	width: 100%;
-    background: transparent;
-}
-
-.header {
-    padding-top: 200px;
-}
-
-
-
-
-
-
-
-#mainContainer {
-    margin-left: 2rem;
-    margin-right: 2rem;
-    background-color: #000000bb;
-}
-
-#wikiContainer {
-    margin-right: auto;
-    margin-left: auto;
-    max-width: 1200px;
-    background-color: #000000c7;
-}
-
-
-
-
-
-
-
-/* Profile picture edit button position */
-.top-right {
-	top: 5%;
-	right: 26.5%;
-}
-
-/* CK Editor */
-.ck p, .ck ul, .ck ol, .ck strong {
-    color: white;
-}
-
-.ck ul, .ck ol {
-    margin-left: 20px;
-}
-
-.ck figure.table[style*="float:left;"] {
-    margin-right: 24px;
-}
-
-.ck figure.table[style*="float:right;"] {
-    margin-left: 24px;
-}
-
-
-/* Jumbotron */
-.jumbotron {
-    background: linear-gradient(0deg, #ff8c00e8 0%, #8b0000e8 100%) !important;
-}
-
-
-/* Nav Tabs */
-.nav-tabs {
-    border-bottom: 1px solid #000;
-}
-
-.nav-tabs .nav-item {
-	font-size: x-large;
-    font-family: 'Cinzel', serif;
-}
-
-.nav-tabs .nav-item a {
-	color: #aa5200;
-}
-
-.nav-tabs .nav-item.show .nav-link, .nav-tabs .nav-link.active {
-	color: #ff6600;
-	background: linear-gradient(0deg, #8b0000e8 0%, #dc143ce8 100%);
-    border-style: solid;
-    border-image: linear-gradient(to bottom, #ff9100, rgba(0, 0, 0, 0.20)) 1 25%;
-}
-
-.nav-tabs .nav-link:focus, .nav-tabs .nav-link:hover {
-    color: #ffb06f;
-    border-style: solid;
-    border-image: linear-gradient(to bottom, #fffb00, rgba(0, 0, 0, 0)) 1 25%;
-}
-
-
-/* Cards */
-.card {
-    background-color: #000000af;
-}
-
-.card, .card-img-overlay {
-    margin-bottom: 15px !important;
-}
-
-.card-img-overlay, .card, .card-img {
-    min-height: 250px;
-}
-
-.card-img-overlay p.card-text {
-    align-self: baseline;
-}
-
-.card-img {
-    opacity: 1;
-    object-fit: cover;
-    max-height: 250px;
-    min-height: 250px;
-}
-
-.card-title.h5 {
-    align-self: baseline;
-}
-
-
-/* Dropping Image Area CSS */
-#droppingArea {
-    align-items: center;
-    display: flex;
-    justify-content: center;
-    border: 4px dashed rgba(0, 0, 0, 0.3);
-    border-radius: 4px;
-    height: 150px;
-    background-color: rgba(104, 42, 0, 0.253);
-}
-
-#droppingArea:hover {
-    background-color: rgba(138, 79, 40, 0.397);
-    cursor: pointer;
-}
-
-.square-dotted-box {
-    border: 4px dashed rgba(0, 0, 0, 0.3);
-    border-radius: 4px;
-    height: 250px;
-    width: 250px;
-    background-color: rgba(104, 42, 0, 0.253);
-}
-
-
-/* Profile Wiki Cards CSS */
-.delete-icon:hover {
-    cursor: pointer;
-}
-
-
-/* Footer CSS */
-#footer {
-    margin-bottom: 0 !important;
-    position: absolute;
-    bottom: 0;
-    height: 20rem;
-    width: 100%;
-    background: linear-gradient(0deg, #e28800e8 0%, #8b0000e8 100%);
-}
-
-
-
-
-
-
-
-
 
 #root {
     position: relative;
@@ -221,18 +76,51 @@ a:hover {
     padding-bottom: 23rem;
 }
 
+/* #Main: Scrollbar */
+* {
+    scrollbar-color: #e68413 rgb(0, 0, 0);
+    scrollbar-width: thin;
+}
 
+::-webkit-scrollbar {
+    width: 10px;
+}
 
+::-webkit-scrollbar-track {
+    background: transparent;
+}
 
+::-webkit-scrollbar-thumb {
+    background: -webkit-linear-gradient(0deg, #e68413 0%, #ed2360 100%);
+    background: -moz-linear-gradient(0deg, #e68413 0%, #ed2360 100%);
+    background: -o-linear-gradient(0deg, #e68413 0%, #ed2360 100%);
+    background: linear-gradient(0deg, #e68413 0%, #ed2360 100%);
+}
 
+::-webkit-scrollbar-thumb:hover {
+    background: -webkit-linear-gradient(180deg, #e68413 0%, #ed2360 100%);
+    background: -moz-linear-gradient(180deg, #e68413 0%, #ed2360 100%);
+    background: -o-linear-gradient(180deg, #e68413 0%, #ed2360 100%);
+    background: linear-gradient(180deg, #e68413 0%, #ed2360 100%);
+}
 
+/* #Main: Anchor */
+a {
+    color: rgb(255, 102, 0);
+    text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
+}
 
+a:hover {
+    color: rgb(255, 115, 0);
+    text-shadow: darkred 0 0 6px;
+}
 
+/* #Main: Spacing */
+.header {
+    padding-top: 200px;
+}
 
-
-
-
-/* Sizing CSS */
+/* #Main: Sizing */
 .mw-content {
     max-width: max-content;
 }
@@ -241,73 +129,56 @@ a:hover {
     max-width: 100% !important;
 }
 
-
-/* Profile Thumbnail image CSS */
-.img-thumbnail {
-    background: linear-gradient(120deg, #ffc400 0%, #ff3700 100%);
-    border: 3px solid transparent;
-    border-radius:15px;
-    padding: 5px;
-    object-fit: cover;
-	width: 250px;
-	height: 250px;
+/* #Main: Containers */
+#mainContainer {
+    margin-left: 2rem;
+    margin-right: 2rem;
+    background-color: #000000bb;
 }
 
-
-/* Form CSS */
-.form-control {
-	background-color: transparent;
-    border: none;
-    color: #000000;
-    border-bottom: black 5px solid;
-    border-radius: 0;
+#wikiContainer,
+#wikiReadContainer {
+    margin-right: auto;
+    margin-left: auto;
+    max-width: 1200px;
+    background-color: #000000c7;
 }
 
-.form-control:focus {
-	background-color: transparent;
-    box-shadow: none;
-    color: #1a1a1a;
-    border-color: #632700;
+#wikiReadContainer .ck.ck-widget__selection-handle {
+    display: none;
 }
 
-.form-control:disabled {
-    background-color: transparent;
+/* #Main: Jumbotron */
+.jumbotron {
+    background: linear-gradient(0deg, #ff8c00e8 0%, #8b0000e8 100%) !important;
 }
 
-select::-ms-expand {
-    display: none !important;
-}
-
-select {
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    text-indent: 1px;
-    text-overflow: '';
-    background: url("http://localhost:8010/style/selectArrow") 98% / 15px no-repeat;
-}
-
-option {
-    background-color: black;
-    color: white;
-}
-
-textarea {
-    border-bottom: none !important;
+/* #Main: Backgrounds */
+.bg-tr-black {
+    background-color: #00000052;
 }
 
 
 
-/* Profile Display Info */
-.profileDisplayPanel {
-    height: 700px;
+
+
+
+
+
+/*? # Navbar */
+.navbar {
+	position: absolute;
+	width: 100%;
+    background: transparent;
 }
 
-.profileDisplayPanel textarea {
-    resize: none;
+#basic-navbar-nav {
+    font-family: 'Audiowide', cursive;
+    font-size: larger;
+    font-weight: 900;
 }
 
-
-/** Fixed Navbar */
+/* #Navbar: Fixed Navbar */
 .navbar_fixed {
     position: fixed;
     width: 100%;
@@ -343,33 +214,41 @@ textarea {
     color: #ffffff;
 }
 
-
-/** #Main: Scrollbar */
-* {
-    scrollbar-color: #e68413 rgb(0, 0, 0);
-    scrollbar-width: thin;
+/* #Navbar: Navbar-dark Custom Bootstrap CSS */
+.navbar-dark .navbar-nav .nav-link {
+    color: rgb(255, 123, 0);
+    text-shadow: darkred 0 0 10px;
 }
 
-::-webkit-scrollbar {
-    width: 10px;
+.navbar-dark .navbar-nav .nav-link:hover,
+.navbar-dark .navbar-nav .nav-link:focus {
+    color: rgb(0, 0, 0);
+    text-shadow: rgb(255, 115, 0) 0 0 10px;
 }
 
-::-webkit-scrollbar-track {
-    background: transparent;
+/*! #Navbar Elements */
+/* Element: Navbar register button  */
+.register-btn {
+    text-shadow: none;
+    display: flex;
+    align-items: center;
 }
 
-::-webkit-scrollbar-thumb {
-    background: -webkit-linear-gradient(0deg, #e68413 0%, #ed2360 100%);
-    background: -moz-linear-gradient(0deg, #e68413 0%, #ed2360 100%);
-    background: -o-linear-gradient(0deg, #e68413 0%, #ed2360 100%);
-    background: linear-gradient(0deg, #e68413 0%, #ed2360 100%);
+/* Element: Navbar Dropdown Menu */
+.dropdown-item:focus, .dropdown-item:hover {
+	color: #000000;
+	text-decoration: none;
+	background-color: #ff4400b4;
+    text-shadow: 0 0 10px #ff9900
 }
 
-::-webkit-scrollbar-thumb:hover {
-    background: -webkit-linear-gradient(180deg, #e68413 0%, #ed2360 100%);
-    background: -moz-linear-gradient(180deg, #e68413 0%, #ed2360 100%);
-    background: -o-linear-gradient(180deg, #e68413 0%, #ed2360 100%);
-    background: linear-gradient(180deg, #e68413 0%, #ed2360 100%);
+.dropdown-menu {
+	background-color: #000000de;
+    text-shadow: 0 0 10px #ff0055
+}
+
+.dropdown-item {
+	color: #ffffff;
 }
 
 
@@ -379,6 +258,33 @@ textarea {
 
 
 
+/** Login-Register Panels CSS */
+#registerPanel #registerPanelContainer,
+#loginPanel #loginFormContainer {
+    flex: 3;
+    background-color: rgb(32, 32, 32);
+    display: flex;
+    flex-direction: column;
+}
+
+#loginPanel img {
+    flex: 7;
+    object-fit: cover;
+}
+
+#loginPanel {
+    display: flex;
+    background-color: #000000c7;
+    max-width: 1400px;
+    height: 700px;
+}
+
+#registerPanel {
+    display: flex;
+    background-color: #000000c7;
+    max-width: 1400px;
+    height: 850px;
+}
 
 
 
@@ -387,7 +293,304 @@ textarea {
 
 
 
+/*? # CK Editor */
+.ck p, .ck ul, .ck ol, .ck strong {
+    color: white;
+}
 
+.ck ul, .ck ol {
+    margin-left: 20px;
+}
+
+.ck figure.table[style*="float:left;"] {
+    margin-right: 24px;
+}
+
+.ck figure.table[style*="float:right;"] {
+    margin-left: 24px;
+}
+
+/*! # Ck Editor Elements */
+/* Element: Ck Editor Table */
+.ck-content .table table {
+	color: #ffffff;
+    text-shadow: darkorange 0 0 1px;
+    font-family: sans-serif;
+}
+
+
+
+
+
+
+
+
+/** # Nav Tabs */
+.nav-tabs {
+    border-bottom: 1px solid #000;
+}
+
+.nav-tabs .nav-item {
+	font-size: x-large;
+    font-family: 'Cinzel', serif;
+}
+
+.nav-tabs .nav-item a {
+	color: #aa5200;
+}
+
+.nav-tabs .nav-item.show .nav-link, .nav-tabs .nav-link.active {
+	color: #ff6600;
+	background: linear-gradient(0deg, #8b0000e8 0%, #dc143ce8 100%);
+    border-style: solid;
+    border-image: linear-gradient(to bottom, #ff9100, rgba(0, 0, 0, 0.20)) 1 25%;
+}
+
+.nav-tabs .nav-link:focus, .nav-tabs .nav-link:hover {
+    color: #ffb06f;
+    border-style: solid;
+    border-image: linear-gradient(to bottom, #fffb00, rgba(0, 0, 0, 0)) 1 25%;
+}
+
+
+
+
+
+
+
+
+/*? # Cards */
+.card {
+    background-color: #000000af;
+}
+
+.card, .card-img-overlay {
+    margin-bottom: 15px !important;
+}
+
+.card-img-overlay {
+    padding: 0;
+}
+
+.card-img-overlay, .card, .card-img {
+    min-height: 250px;
+}
+
+.card-img-overlay p.card-text {
+    align-self: baseline;
+}
+
+.card-img {
+    opacity: 1;
+    object-fit: cover;
+    max-height: 250px;
+    min-height: 250px;
+}
+
+.card-img-overlay .card-title.h5 {
+    align-self: baseline;
+	width: 100%;
+	padding: 1rem;
+	background: linear-gradient(to right, black 0%, transparent 100%);
+    font-weight: bolder;
+    font-family: 'Cinzel', serif;
+}
+
+.card-title.h5 {
+    font-family: 'Cinzel', serif;
+}
+
+.card-img-overlay p.card-text {
+    text-align: right;
+	width: 100%;
+	padding: 1rem;
+	background: linear-gradient(to right, transparent 0%, black 100%);
+    margin-bottom: 1.25rem;
+}
+
+
+
+
+
+
+
+
+/*? # Profile */
+/* # Profile Navtab Content */
+.profileDisplayPanel {
+    height: 700px;
+}
+
+.profileDisplayPanel textarea {
+    resize: none;
+}
+
+/*! # Profile Elements */
+/* #Element: User's Profile image CSS */
+.img-thumbnail {
+    background: linear-gradient(120deg, #ffc400 0%, #ff3700 100%);
+    border: 3px solid transparent;
+    border-radius:15px;
+    padding: 5px;
+    object-fit: cover;
+	width: 250px;
+	height: 250px;
+}
+
+.wiki-author-img {
+    background: linear-gradient(120deg, #ffc400 0%, #ff3700 100%);
+    border: 1px solid transparent;
+    border-radius:15px;
+    padding: 2px;
+    object-fit: cover;
+	width: 180px;
+	height: 180px;
+}
+
+#wikiPageAuthorLabel {
+	margin-top: auto;
+	margin-bottom: auto;
+	margin-left: 25px;
+	color: white;
+	font-size: larger;
+}
+
+/* #Element: Profile Wiki Cards Delete Button CSS */
+.delete-icon {
+    margin: 1.25rem;
+}
+
+.delete-icon:hover {
+    cursor: pointer;
+    filter: drop-shadow(0 0 5px orange);
+}
+
+/* #Element: Profile Picture Edit Button Position */
+.top-right {
+	top: 5%;
+	right: 26.5%;
+}
+
+
+
+
+
+
+
+
+/*? Dropping Image Area CSS */
+#droppingArea {
+    align-items: center;
+    display: flex;
+    justify-content: center;
+    border: 4px dashed rgba(0, 0, 0, 0.3);
+    border-radius: 4px;
+    height: 150px;
+    background-color: rgba(104, 42, 0, 0.253);
+}
+
+#droppingArea:hover {
+    background-color: rgba(138, 79, 40, 0.397);
+    cursor: pointer;
+}
+
+.square-dotted-box {
+    border: 4px dashed rgba(0, 0, 0, 0.3);
+    border-radius: 4px;
+    height: 250px;
+    width: 250px;
+    background-color: rgba(104, 42, 0, 0.253);
+}
+
+
+
+
+
+
+
+
+/*? Form CSS */
+.form-control {
+	background-color: transparent;
+    border: none;
+    border-bottom: black 5px solid;
+    border-radius: 0;
+    color: #FFAA00; 
+    font-weight: bold; 
+    text-shadow: 0 0 10px #ff0000
+}
+
+.form-control:focus {
+	background-color: transparent;
+    box-shadow: none;
+    border-color: #632700;
+    color: #ff6600; 
+    font-weight: bold; 
+    text-shadow: 0 0 10px #ff0055
+}
+
+.form-control:disabled {
+    background-color: transparent;
+}
+
+.form-group {
+	margin-bottom: 2rem;
+}
+
+select::-ms-expand {
+    display: none !important;
+}
+
+select {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    text-indent: 1px;
+    text-overflow: '';
+    background: url("http://localhost:8010/style/selectArrow") 98% / 15px no-repeat;
+}
+
+option {
+    background-color: black;
+    color: white;
+}
+
+textarea {
+    color: white !important;
+    border-bottom: none !important;
+}
+
+
+
+
+
+
+
+
+/*! Homepage Elements  */
+/* Element: Photo Gallery Card Homepage  */
+.home-gallery-pic {
+    max-height: 450px !important;
+    min-height: 450px !important;
+}
+
+/* Element: Rank Card Homepage  */
+.rank-container a {
+    font-weight: 900;
+}
+
+.rank-container {
+    background: linear-gradient(0deg, #8b0000e8 0%, #e28800e8 100%);
+}
+
+
+
+
+
+
+
+
+/*! Other Theme Elements */
+/* Element: ListGroup */
 .list-group-item {
 	position: relative;
 	display: block;
@@ -398,5 +601,37 @@ textarea {
 }
 
 .list-group {
-    background: linear-gradient(0deg, #8b0000e8 0%, #e28800e8 100%);
+    color: white;
+    text-shadow: 0 0 5px darkorange;
+    background: rgba(0, 0, 0, 0.89);
+}
+
+/* Element: Alert */
+.alert-danger {
+	color: #ffce8e;
+	background-color: #ff0015a2;
+	border-color: #ff0015a2;
+}
+
+.alert-success {
+	color: #38ff66;
+	background-color: #155724;
+	border-color: #094216;
+}
+
+
+
+
+
+
+
+
+/*? # Footer CSS */
+#footer {
+    margin-bottom: 0 !important;
+    position: absolute;
+    bottom: 0;
+    height: 20rem;
+    width: 100%;
+    background: linear-gradient(0deg, #e28800e8 0%, #8b0000e8 100%);
 }

@@ -1,7 +1,7 @@
 // Modules
 import React from "react";
 import { useSelector } from 'react-redux';
-import { Table, Container } from 'react-bootstrap';
+import { Table, Container, Jumbotron } from 'react-bootstrap';
 import { Link } from "react-router-dom";
 
 // Fontawesome
@@ -37,40 +37,44 @@ const Users = () => {
 
     // Component Return
     return (
-        <Container className='header'>
-            <h1>Users: {count}</h1>
-            <Table striped bordered hover>
-                <thead>
-                    <tr>
-                        <th><FontAwesomeIcon icon={faUserCircle}></FontAwesomeIcon> ID</th>
-                        <th><FontAwesomeIcon icon={faUsersCog}></FontAwesomeIcon> Type</th>
-                        <th><FontAwesomeIcon icon={faShieldAlt}></FontAwesomeIcon> Verified</th>
-                        <th><FontAwesomeIcon icon={faAt}></FontAwesomeIcon> E-Mail</th>
-                        <th><FontAwesomeIcon icon={faAddressCard}></FontAwesomeIcon> Name</th>
-                    </tr>
-                </thead>
-                <tbody key={"tbody"}>
-                    {user.map((user) => {
-                        let verified;
+        <>
+            <Jumbotron fluid className='header' />
 
-                        if (user.active) {
-                            verified = <FontAwesomeIcon icon={faCheck} style={{ color: "green" }}></FontAwesomeIcon>
-                        } else {
-                            verified = <FontAwesomeIcon icon={faTimes} style={{ color: "red" }}></FontAwesomeIcon>
-                        }
-
-                        return <tr key={user._id}>
-                            <td>{user._id}</td>
-                            <td><Link to={`/profile:${user.userName}`}>{user.userName}</Link></td>
-                            <td>{user.type}</td>
-                            <td>{verified}</td>
-                            <td>{user.email}</td>
-                            <td>{user.name.lastName} {user.name.firstName}</td>
+            <Container>
+                <h1>Users: {count}</h1>
+                <Table striped bordered hover>
+                    <thead>
+                        <tr>
+                            <th><FontAwesomeIcon icon={faUserCircle}></FontAwesomeIcon> ID</th>
+                            <th><FontAwesomeIcon icon={faUsersCog}></FontAwesomeIcon> Type</th>
+                            <th><FontAwesomeIcon icon={faShieldAlt}></FontAwesomeIcon> Verified</th>
+                            <th><FontAwesomeIcon icon={faAt}></FontAwesomeIcon> E-Mail</th>
+                            <th><FontAwesomeIcon icon={faAddressCard}></FontAwesomeIcon> Name</th>
                         </tr>
-                    })}
-                </tbody>
-            </Table>
-        </Container>
+                    </thead>
+                    <tbody key={"tbody"}>
+                        {user.map((user) => {
+                            let verified;
+
+                            if (user.active) {
+                                verified = <FontAwesomeIcon icon={faCheck} style={{ color: "green" }}></FontAwesomeIcon>
+                            } else {
+                                verified = <FontAwesomeIcon icon={faTimes} style={{ color: "red" }}></FontAwesomeIcon>
+                            }
+
+                            return <tr key={user._id}>
+                                <td>{user._id}</td>
+                                <td><Link to={`/profile:${user.userName}`}>{user.userName}</Link></td>
+                                <td>{user.type}</td>
+                                <td>{verified}</td>
+                                <td>{user.email}</td>
+                                <td>{user.name.lastName} {user.name.firstName}</td>
+                            </tr>
+                        })}
+                    </tbody>
+                </Table>
+            </Container>
+        </>
     );
 };
 

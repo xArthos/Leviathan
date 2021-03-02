@@ -48,7 +48,7 @@
 }
 
 body {
-    background-image: url('/images/main-bg.png'), url('/images/main-bg.jpg');
+    background-image: url('/images/main-bg.jpg'); /* url('/images/main-bg.png'); */
     background-attachment: fixed;
     background-size: cover;
 }

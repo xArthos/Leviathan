@@ -98,7 +98,7 @@ export default class MainNavBar extends Component {
                                     </> :
                                     <>
                                         <Link className="nav-link" to='/login'><FontAwesomeIcon icon={faSignInAlt} /> Log In</Link>
-                                        <Link className="btn btn-warning" to='/register'><FontAwesomeIcon icon={faServer} /> Become a member!</Link>
+                                        <Link className="btn btn-warning register-btn" to='/register'><FontAwesomeIcon icon={faServer} /> Become a member!</Link>
                                     </>
                             }
                         </Nav>

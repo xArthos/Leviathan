@@ -15,13 +15,21 @@ export default class Succesufully extends Component {
 
         // * State
         this.state = {
-            message: this.props.location.state.message
+            message: this.props.location.state.message,
+            render: setTimeout(() => {
+                this.props.history.push('/');
+                window.location.reload(true);
+            }, 1800)
         };
 
-        setTimeout(() => { 
-            this.props.history.push('/');
-            window.location.reload(true);
-        }, 1800);
+
+    };
+
+    componentWillUnmount() {
+        if (this.state.render) {
+            clearTimeout(this.state.render);
+        };
+        window.location.reload(true);
     };
 
     // Render

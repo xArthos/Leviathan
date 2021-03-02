@@ -1,6 +1,6 @@
 // Modules
 import React, { useState, useEffect } from "react";
-import { Table, Container } from 'react-bootstrap';
+import { Table, Container, Jumbotron } from 'react-bootstrap';
 import { Link } from "react-router-dom";
 import axios from 'axios';
 
@@ -25,46 +25,43 @@ const Wikis = () => {
 
     // Set URL
     const wikisUrl = 'http://localhost:8010/allWikisList';
-    const [wikis, setWikis] = useState([]);
-    const variable = 'Wiki';
+    let [wikis, setWikis] = useState([]);
 
-    // APIs
-    // All Wikis
-    // const fetchWikis = () => axios.get(wikisUrl).then(res => setWikis(res.data));
-    // fetchWikis()
-    // console.log(wikis)
-
-        // Call once the user from the DB
+    // Call once the user from the DB
     useEffect(() => {
         axios.get(wikisUrl)
             .then((res) => {
-                setWikis(wikis = res)
+                // eslint-disable-next-line
+                setWikis(wikis = res.data)
             })
             .catch((err) => console.log(err));
-    }, [variable]);
+    }, []);
 
     // Component Return
     return (
-        <Container className='header'>
-            <h1>Wikis: </h1>
-            <Table striped bordered hover>
-                <thead>
-                    <tr>
-                        <th><FontAwesomeIcon icon={faUserCircle}></FontAwesomeIcon> ID</th>
-                        <th><FontAwesomeIcon icon={faAddressCard}></FontAwesomeIcon> Name</th>
-                    </tr>
-                </thead>
-                <tbody key={"tbody"}>
-                    {wikis.map((wikis) => {
-
-                        return <tr key={wikis._id}>
-                            <td>{wikis._id}</td>
-                            <td><Link to={`/wiki/${wikis._id}`}>Wiki</Link></td>
+        <>
+            <Jumbotron fluid className='header' />
+            <Container className='header'>
+                <h1>Wikis: </h1>
+                <Table striped bordered hover>
+                    <thead>
+                        <tr>
+                            <th><FontAwesomeIcon icon={faUserCircle}></FontAwesomeIcon> ID</th>
+                            <th><FontAwesomeIcon icon={faAddressCard}></FontAwesomeIcon> Name</th>
                         </tr>
-                    })}
-                </tbody>
-            </Table>
-        </Container>
+                    </thead>
+                    <tbody key={"tbody"}>
+                        {wikis.map((wikis) => {
+
+                            return <tr key={wikis._id}>
+                                <td>{wikis._id}</td>
+                                <td><Link to={`/wiki/${wikis._id}`}>Wiki</Link></td>
+                            </tr>
+                        })}
+                    </tbody>
+                </Table>
+            </Container>
+        </>
     );
 };
 

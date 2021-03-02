@@ -108,7 +108,7 @@ const PersonalArea = () => {
                     </Col>
                     <Col xs={6} md={6}>
                         <ListGroup>
-                            <ListGroup.Item><Button>Private Messages</Button></ListGroup.Item>
+                            <ListGroup.Item><Button variant='warning'>Private Messages</Button></ListGroup.Item>
                         </ListGroup>
                     </Col>
                 </Row>
@@ -131,52 +131,26 @@ export default class Profile extends Component {
     constructor(props) {
         super(props);
 
-        // Data of the logged User
-        const loggedUser = JSON.parse(localStorage.getItem('Leviathan'));
-
         //* State
-        // Set the State if there's not a User logged
-        if (loggedUser === null) {
-            this.state = {
-                // Logged User
-                isLogged: false,
+        this.state = {
+            // Logged User
+            isLogged: false,
 
-                // User's Infos
-                user: '',
-                userId: '',
-                userName: this.props.match.params.userName,
-                profilePicture: '',
-                accessToken: '',
-                refreshToken: '',
-                userWikis: 0,
-                wikiDatas: [],
-                message: '',
-                alertVariant: '',
+            // User's Infos
+            user: '',
+            userId: '',
+            userName: this.props.match.params.userName,
+            profilePicture: '',
+            accessToken: '',
+            refreshToken: '',
+            userWikis: 0,
+            wikiDatas: [],
+            message: '',
+            alertVariant: '',
 
-                // Render by Default the sub-component 'About'
-                render: 'About'
-            };
-        } else {
-            this.state = {
-
-                // Logged User
-                isLogged: true,
-
-                // User's Infos
-                user: loggedUser.user,
-                userId: loggedUser.user._id,
-                userName: loggedUser.user.userName,
-                profilePicture: loggedUser.user.profilePicture,
-                accessToken: loggedUser.accessToken,
-                refreshToken: loggedUser.refreshToken,
-                userWikis: 0,
-                wikiDatas: [],
-                message: '',
-                alertVariant: '',
-
-                // Render by Default the sub-component 'About'
-                render: 'About'
-            };
+            // Render by Default the sub-component 'About'
+            render: 'About',
+            url: window.location.href
         };
 
         // Binding Functions
@@ -193,7 +167,7 @@ export default class Profile extends Component {
 
     //? ******************** Load User's Wikis *******************************************
     componentDidMount() {
-        axios.get(`http://localhost:8010/${this.state.userName}/wikis`)
+        axios.get(`http://localhost:8010/${this.props.match.params.userName}/wikis`)
             .then(res => {
                 // console.log(res.data);
                 this.setState({
@@ -215,7 +189,59 @@ export default class Profile extends Component {
                 .catch((err) => console.log(err));
         }
 
+        let loggedUser = JSON.parse(localStorage.getItem('Leviathan'));
+        if (loggedUser === null) {
+            loggedUser = {
+                user: {
+                    userName: ''
+                }
+            }
+        }
+        let userPageName = this.props.match.params.userName;
+        let userOwner = loggedUser.user.userName === userPageName;
+
+        //* State
+        // Set the State if there's not a User logged
+        if (userOwner === false) {
+            this.setState({
+                userName: this.props.match.params.userName,
+            })
+        } else {
+            this.setState({
+
+                // Logged User
+                isLogged: true,
+
+                // User's Infos
+                user: loggedUser.user,
+                userId: loggedUser.user._id,
+                userName: loggedUser.user.userName,
+                profilePicture: loggedUser.user.profilePicture,
+                accessToken: loggedUser.accessToken,
+                refreshToken: loggedUser.refreshToken,
+            })
+        };
     };
+
+    componentDidUpdate(prevProps, prevState) {
+        const loggedUser = JSON.parse(localStorage.getItem('Leviathan'));
+
+        if (prevState.userName !== this.props.match.params.userName) {
+            this.setState({
+
+                // Logged User
+                isLogged: true,
+
+                // User's Infos
+                user: loggedUser.user,
+                userId: loggedUser.user._id,
+                userName: loggedUser.user.userName,
+                profilePicture: loggedUser.user.profilePicture,
+                accessToken: loggedUser.accessToken,
+                refreshToken: loggedUser.refreshToken,
+            })
+        }
+    }
     //? **********************************************************************************
 
 
@@ -295,10 +321,10 @@ export default class Profile extends Component {
                 <Jumbotron fluid className='header'>
                     <Row className='px-3 mx-0'>
                         <Col md={3} className='text-center'>
-                            <Image src={`http://localhost:8010/${this.state.userName}/profilePicture`} thumbnail />
+                            <Image src={`http://localhost:8010/${this.props.match.params.userName}/profilePicture`} thumbnail />
                         </Col>
                         <Col md={7}>
-                            <h1>{this.state.userName}</h1>
+                            <h1>{this.props.match.params.userName}</h1>
                         </Col>
                         {
                             this.state.isLogged ?
@@ -360,14 +386,14 @@ export default class Profile extends Component {
                             this.state.isLogged ?
                                 <Col md='3' key='newWikiCard'>
                                     <Card className='bg-dark text-white'>
-                                        <Card.Img src='images/test.jpg' alt='Card image' />
+                                        <Card.Img src='images/newWiki.jpg' alt='Card image' />
                                         <Card.ImgOverlay>
-                                            <Card.Body className='d-flex flex-column align-items-center justify-content-around h-100 rgba-black-strong py-5 px-4'>
+                                            <Card.Body className='d-flex flex-column align-items-center justify-content-around h-100 bg-tr-black py-5 px-4'>
                                                 <FontAwesomeIcon size='6x' icon={faPlus} />
                                                 <br />
                                                 <Button variant='warning' onClick={() => this.createNewWiki()}>
                                                     Create a New Wiki Page
-                                            </Button>
+                                                </Button>
                                             </Card.Body>
                                         </Card.ImgOverlay>
                                     </Card>
@@ -378,17 +404,16 @@ export default class Profile extends Component {
                         {
                             this.state.wikiDatas.length !== 0 ?
                                 this.state.wikiDatas.map((wiki) => {
+                                    const re = /(?:\.([^.]+))?$/;
 
                                     return (
                                         <Col md='3' key={`${wiki._id}`}>
                                             <Card className='bg-dark text-white'>
-                                                <Card.Img src={`http://localhost:8010/img/bg/${wiki._id}/${wiki.cardBg.originalname.split('.')[1]}`} alt='Card image' />
+                                                <Card.Img src={`http://localhost:8010/img/bg/${wiki._id}/${re.exec(wiki.cardBg.originalname)[1]}`} alt='Card image' />
                                                 <Card.ImgOverlay className='d-flex flex-column align-items-center justify-content-between'>
-                                                    <Card.Title>{wiki.title}</Card.Title>
+                                                    <Card.Title><a href={`/wiki/${wiki._id}`}>{wiki.title}</a></Card.Title>
                                                     <Card.Text>
-                                                        <a href={`/wiki/${wiki._id}`}>Go to the Wiki</a>
-                                                        <br />
-                                                    Last update: <Moment fromNow>{wiki.updatedAt}</Moment>
+                                                        Last update: <Moment fromNow>{wiki.updatedAt}</Moment>
                                                     </Card.Text>
                                                     {
                                                         this.state.isLogged ?
@@ -407,9 +432,11 @@ export default class Profile extends Component {
                                 :
                                 <Col md='3' key={`noWiki`}>
                                     <Card className='bg-dark text-white'>
-                                        <Card.Img src='images/test.jpg' alt='Card image' />
+                                        <Card.Img src='images/noWikis.png' alt='Card image' />
                                         <Card.ImgOverlay className='d-flex flex-column justify-content-center'>
-                                            <Card.Title style={{ alignSelf: 'center' }}>No Wikis</Card.Title>
+                                            <Card.Body className='d-flex flex-column align-items-center justify-content-around h-100 bg-tr-black py-5 px-4'>
+                                                <h3 className='text-center'>This User didn’t write any Wiki yet</h3>
+                                            </Card.Body>
                                         </Card.ImgOverlay>
                                     </Card>
                                 </Col>
