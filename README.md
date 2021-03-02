@@ -4,7 +4,7 @@
 Social Game Wikipedia Platform
 
 ### Developed by:
-Giampaolo Nico Lo Cascio - [Arthos] (https://github.com/xArthos)
+Giampaolo Nico Lo Cascio - [Arthos](https://github.com/xArthos)
 
 ### Introduction:
 - Leviathan aims to create an online Platform where fans of videogames can create their own Wikipage about their favorite games, 
