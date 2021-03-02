@@ -5,3 +5,6 @@
 
 #Miscelanous
 /server/.env
+
+#Pictures
+/server/public/images/wikis
