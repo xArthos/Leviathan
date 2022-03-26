@@ -18,7 +18,7 @@ import {
     lastPublishedWikisList,
     wikiPageCardBackground,
     lastPublishedGalleriesList
-} from '../controllers/get.js'
+} from '../controllers/get.js';
 
 import {
     validateUserInformations,
@@ -34,8 +34,7 @@ import {
     createNewWiki,
     deleteWiki,
     updateAbout
-} from '../controllers/post.js'
-
+} from '../controllers/post.js';
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -47,13 +46,10 @@ const router = express.Router();
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-
 // Server Storage Uploaded Files - Settings
 // Profile Pictures Storage
 const storageProfilePic = multer.diskStorage({
-
     destination: (req, file, cb) => {
-
         // User infos
         const { newUser } = req.params;
 
@@ -68,22 +64,19 @@ const storageProfilePic = multer.diskStorage({
         // Callback
         cb(null, dir);
     },
-
     filename: (req, file, cb) => {
         // console.log(file)
         cb(null, `profile${path.extname(file.originalname)}`);
     }
-
 });
+
 const uploadProfilePic = multer({
     storage: storageProfilePic
 });
 
 // Profile Pictures Storage
 const storageWikiCardBg = multer.diskStorage({
-
     destination: (req, file, cb) => {
-
         const { userId, wikiId } = req.params;
 
         // Destination of the file
@@ -97,13 +90,12 @@ const storageWikiCardBg = multer.diskStorage({
         // Callback
         cb(null, dir);
     },
-
     filename: (req, file, cb) => {
         // console.log(file)
         cb(null, `card-bg${path.extname(file.originalname)}`);
     }
-
 });
+
 const uploadWikiCardBg = multer({
     storage: storageWikiCardBg
 });
@@ -111,7 +103,6 @@ const uploadWikiCardBg = multer({
 // New Wiki Page Storage
 const storageNewWikiPagePics = multer.diskStorage({
     destination: (req, file, cb) => {
-
         const { userId, wikiId } = req.params;
 
         // Destination of the file
@@ -133,9 +124,7 @@ const uploadNewWikiPagePics = multer({
     storage: storageNewWikiPagePics
 });
 
-
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
 
 // GET
 router.get('/allUsersList', allUsersList);
@@ -151,21 +140,17 @@ router.get('/style/selectArrow', formSelectArrowIcon);
 router.get('/lastPublishedWikis', lastPublishedWikisList);
 router.get('/lastPublishedGalleries', lastPublishedGalleriesList);
 
-
 // POST
 router.post('/login', login);
 router.post('/:newUser/register', uploadProfilePic.single('profilePicture'), validateUserInformations, checkExitEmail, checkExitUsername, signUp);
-
 router.post('/profile::userName/edit/newProfilePicUpload', uploadProfilePic.single('editProfilePicture'), newProfilePicUpload);
 router.post('/profile::userName/edit/about', updateAbout);
-
 router.post('/newWiki/picturesUpload/:userId/:wikiId', uploadNewWikiPagePics.single('upload'), newWikiImageEditorUpload);
 router.post('/confirm', setProfilePic);
 router.post('/newWiki/publish/:userId/:wikiId', uploadWikiCardBg.single('cardBackGroundImage'), publishWiki);
 router.post('/deletePhoto/:wikiId/:fileName/:fileExt', deleteFile);
 router.post('/wiki/create/:userId', createNewWiki);
 router.post('/wiki/delete/:wikiId', deleteWiki);
-
 
 // Export
 export default router;

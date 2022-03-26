@@ -55,7 +55,6 @@ const App = () => {
         <Route path='/profile::userName/newWikiPage/:newWikiPageId' exact component={NewWikiPage} />
         <Route path='/wiki/:WikiPageId' exact component={WikiPage} />
 
-
         {/* 404 Page */}
         <Route path='*' component={() => <ErrorPage message={'404 Not Found'} />} />
       </Switch>

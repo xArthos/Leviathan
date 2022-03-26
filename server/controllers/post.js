@@ -159,7 +159,6 @@ export const login = async (req, res) => {
             // Decrypt password
             let checkpwd = bcrypt.compareSync(password, user.password);
             if (checkpwd) {
-
                 const payload = {
                     user
                 };
