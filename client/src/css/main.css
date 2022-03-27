@@ -63,11 +63,11 @@ body {
 h1, h2, h3, h4, h5, h6 {
     font-family: 'Cinzel', serif;
     color: #ffffff;
-    text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
+    text-shadow: -1px 0 #000000, 0 1px #000000, 1px 0 #000000, 0 -1px #000000;
 }
 
 h2.topTitle {
-    color: white;
+    color: #ffffff;
 }
 
 #root {
@@ -78,7 +78,7 @@ h2.topTitle {
 
 /* #Main: Scrollbar */
 * {
-    scrollbar-color: #e68413 rgb(0, 0, 0);
+    scrollbar-color: #e68413 #000000;
     scrollbar-width: thin;
 }
 
@@ -106,13 +106,13 @@ h2.topTitle {
 
 /* #Main: Anchor */
 a {
-    color: rgb(255, 102, 0);
-    text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
+    color: #ff6600;
+    text-shadow: -1px 0 #000000, 0 1px #000000, 1px 0 #000000, 0 -1px #000000;
 }
 
 a:hover {
-    color: rgb(255, 115, 0);
-    text-shadow: darkred 0 0 6px;
+    color: #ff7300;
+    text-shadow: #8b0000 0 0 6px;
 }
 
 /* #Main: Spacing */
@@ -216,14 +216,14 @@ a:hover {
 
 /* #Navbar: Navbar-dark Custom Bootstrap CSS */
 .navbar-dark .navbar-nav .nav-link {
-    color: rgb(255, 123, 0);
-    text-shadow: darkred 0 0 10px;
+    color: #ff7b00;
+    text-shadow: #8b0000 0 0 10px;
 }
 
 .navbar-dark .navbar-nav .nav-link:hover,
 .navbar-dark .navbar-nav .nav-link:focus {
     color: rgb(0, 0, 0);
-    text-shadow: rgb(255, 115, 0) 0 0 10px;
+    text-shadow: #ff7300 0 0 10px;
 }
 
 /*! #Navbar Elements */
@@ -262,7 +262,7 @@ a:hover {
 #registerPanel #registerPanelContainer,
 #loginPanel #loginFormContainer {
     flex: 3;
-    background-color: rgb(32, 32, 32);
+    background-color: #202020;
     display: flex;
     flex-direction: column;
 }
@@ -295,7 +295,7 @@ a:hover {
 
 /*? # CK Editor */
 .ck p, .ck ul, .ck ol, .ck strong {
-    color: white;
+    color: #ffffff;
 }
 
 .ck ul, .ck ol {
@@ -343,13 +343,13 @@ a:hover {
 	color: #ff6600;
 	background: linear-gradient(0deg, #8b0000e8 0%, #dc143ce8 100%);
     border-style: solid;
-    border-image: linear-gradient(to bottom, #ff9100, rgba(0, 0, 0, 0.20)) 1 25%;
+    border-image: linear-gradient(to bottom, #ff9100, #00000033) 1 25%;
 }
 
 .nav-tabs .nav-link:focus, .nav-tabs .nav-link:hover {
     color: #ffb06f;
     border-style: solid;
-    border-image: linear-gradient(to bottom, #fffb00, rgba(0, 0, 0, 0)) 1 25%;
+    border-image: linear-gradient(to bottom, #fffb00, #00000000) 1 25%;
 }
 
 
@@ -391,7 +391,7 @@ a:hover {
     align-self: baseline;
 	width: 100%;
 	padding: 1rem;
-	background: linear-gradient(to right, black 0%, transparent 100%);
+	background: linear-gradient(to right, #000000 0%, transparent 100%);
     font-weight: bolder;
     font-family: 'Cinzel', serif;
 }
@@ -404,7 +404,7 @@ a:hover {
     text-align: right;
 	width: 100%;
 	padding: 1rem;
-	background: linear-gradient(to right, transparent 0%, black 100%);
+	background: linear-gradient(to right, transparent 0%, #000000 100%);
     margin-bottom: 1.25rem;
 }
 
@@ -451,7 +451,7 @@ a:hover {
 	margin-top: auto;
 	margin-bottom: auto;
 	margin-left: 25px;
-	color: white;
+	color: #ffffff;
 	font-size: larger;
 }
 
@@ -462,7 +462,7 @@ a:hover {
 
 .delete-icon:hover {
     cursor: pointer;
-    filter: drop-shadow(0 0 5px orange);
+    filter: drop-shadow(0 0 5px #ffa500);
 }
 
 /* #Element: Profile Picture Edit Button Position */
@@ -483,23 +483,23 @@ a:hover {
     align-items: center;
     display: flex;
     justify-content: center;
-    border: 4px dashed rgba(0, 0, 0, 0.3);
+    border: 4px dashed #0000004d;
     border-radius: 4px;
     height: 150px;
-    background-color: rgba(104, 42, 0, 0.253);
+    background-color: #682a0041;
 }
 
 #droppingArea:hover {
-    background-color: rgba(138, 79, 40, 0.397);
+    background-color: #8a4f2865;
     cursor: pointer;
 }
 
 .square-dotted-box {
-    border: 4px dashed rgba(0, 0, 0, 0.3);
+    border: 4px dashed #0000004d;
     border-radius: 4px;
     height: 250px;
     width: 250px;
-    background-color: rgba(104, 42, 0, 0.253);
+    background-color: #682a0041;
 }
 
 
@@ -513,7 +513,7 @@ a:hover {
 .form-control {
 	background-color: transparent;
     border: none;
-    border-bottom: black 5px solid;
+    border-bottom: #000000 5px solid;
     border-radius: 0;
     color: #FFAA00; 
     font-weight: bold; 
@@ -550,12 +550,12 @@ select {
 }
 
 option {
-    background-color: black;
-    color: white;
+    background-color: #000000;
+    color: #ffffff;
 }
 
 textarea {
-    color: white !important;
+    color: #ffffff !important;
     border-bottom: none !important;
 }
 
@@ -601,9 +601,9 @@ textarea {
 }
 
 .list-group {
-    color: white;
-    text-shadow: 0 0 5px darkorange;
-    background: rgba(0, 0, 0, 0.89);
+    color: #ffffff;
+    text-shadow: 0 0 5px #ff8c00;
+    background: #000000e3;
 }
 
 /* Element: Alert */
